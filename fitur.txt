@@ -1,0 +1,42 @@
+fitur fitur 
+
+1. Fitur Utama (Core POS & Booking) - Fokus Kasir
+Ini adalah jantung dari aplikasi yang akan sering dibuka oleh Kasir:
+
+Dashboard Kasir: Ringkasan jumlah antrean hari ini dan total transaksi yang masuk.
+
+Input Transaksi (Walk-in): Fitur untuk mencatat pelanggan yang langsung datang (pilih layanan, pilih stylist, hitung total).
+
+Manajemen Antrean/Jadwal: Kalender internal untuk mencatat pesanan lewat telepon/WhatsApp agar tidak bentrok.
+
+Proses Pembayaran: Pilih metode pembayaran (Tunai, QRIS, Transfer) dan hitung kembalian.
+
+Cetak/Kirim Struk: Integrasi untuk cetak struk thermal atau kirim struk via WhatsApp/Email.
+
+Cek Ketersediaan Stylist: Melihat siapa saja stylist yang sedang sibuk atau sedang libur.
+
+stock opname:mengecek ketersediaan product jual.
+
+2. Fitur Manajemen (Admin)
+Admin bertugas memastikan semua "data master" siap digunakan oleh kasir:
+
+Manajemen Layanan (Katalog): Tambah, edit, atau hapus jenis jasa (misal: Haircut, Coloring, Spa) beserta harganya.
+
+Manajemen Stylist: Mengelola data karyawan/stylist, jam kerja mereka, dan spesialisasi.
+
+Manajemen Member (Opsional): Mencatat data pelanggan setia untuk memberikan diskon khusus.
+
+Input Pengeluaran Harian: Mencatat biaya operasional kecil (misal: beli sabun, bayar listrik) agar laporan keuangan akurat.
+
+Manajemen Inventaris: Stok barang yang digunakan (shampoo, vitamin rambut, dll) agar tahu kapan harus beli lagi.
+
+3. Fitur Strategis (Owner)
+Owner fokus pada performa bisnis secara keseluruhan:
+
+Laporan Keuangan (Income Statement): Laporan laba rugi harian, mingguan, dan bulanan.
+
+Analisis Performa: Melihat layanan mana yang paling laku dan stylist mana yang paling banyak melayani pelanggan (untuk bonus/komisi).
+
+User Management: Menambah atau menonaktifkan akun Admin dan Kasir.
+
+Log Aktivitas: Melihat histori perubahan data penting untuk mencegah kecurangan (misal: pembatalan transaksi oleh kasir).
