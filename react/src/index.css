@@ -1,70 +1,41 @@
+/* 1. Import Tailwind dulu */
 @import "tailwindcss";
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* 2. Import Fonts (diletakkan setelah tailwind import) */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+/* 3. Layer base untuk mendefinisikan variabel dan style dasar */
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    /* Warna Background */
+    --color-primary: #0a0a0a;
+    --color-secondary: #111111;
+    --color-card: #161616; /* Sedikit lebih terang */
+    --color-hover: #222222;
+
+    /* Warna Brand (Emas) */
+    --color-gold: #d4af37;
+    --color-gold-light: #f4e4a6;
+    --color-gold-dark: #a88c2a;
+
+    /* Warna Status */
+    --color-success: #22c55e;
+    --color-danger: #ef4444;
+    
+    /* Border & Text */
+    --color-border: #333333; /* Dibuat lebih terang */
+    --color-muted: #8a8a8a;
+    
+    /* Font */
+    --font-display: 'Cormorant Garamond', serif;
+    --font-sans: 'Montserrat', sans-serif;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-primary);
+    color: white;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
   }
 }
