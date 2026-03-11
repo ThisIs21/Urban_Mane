@@ -34,3 +34,12 @@ type RegisterInput struct {
     Role     string `json:"role"` 
     Phone    string `json:"phone"`
 }
+
+// Struct khusus untuk Update (Field tidak wajib semua)
+type UpdateUserInput struct {
+    Name     string `json:"name"`
+    Email    string `json:"email"`
+    Password string `json:"password"` // Tidak wajib
+    Role     string `json:"role"`
+    Phone    string `json:"phone"`
+}

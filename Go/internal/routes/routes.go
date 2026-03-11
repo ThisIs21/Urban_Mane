@@ -8,19 +8,32 @@ import (
 )
 
 // RegisterRoutes attaches all route groups to the main engine
-func RegisterRoutes(r *gin.Engine, authController *controller.AuthController) {
-	api := r.Group("/api/v1")
+func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController) {
+
+	// Public
+	auth := r.Group("/api/v1/auth")
 	{
-		auth := api.Group("/auth")
+		auth.POST("/register", authController.Register)
+		auth.POST("/login", authController.Login)
+	}
+
+	// Protected
+	api := r.Group("/api/v1")
+	api.Use(middleware.AuthMiddleware())
+	{
+		// profile endpoint returns current logged-in user
+		api.GET("/profile", authController.GetProfile)
+
+		// User Management (Admin Only)
+		users := api.Group("/users")
+		users.Use(middleware.RoleMiddleware("admin"))
 		{
-			auth.POST("/register", authController.Register)
-			auth.POST("/login", authController.Login)
+			users.GET("", userController.GetUsers)
+			users.POST("", userController.CreateUser)
+			users.PUT("/:id", userController.UpdateUser)
+			users.DELETE("/:id", userController.DeleteUser)
 		}
 
-		protected := api.Group("/")
-		protected.Use(middleware.AuthMiddleware())
-		{
-			protected.GET("/profile", authController.GetProfile)
-		}
+		// ... other routes like products, etc
 	}
 }

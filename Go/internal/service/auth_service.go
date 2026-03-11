@@ -46,61 +46,63 @@ func (s *AuthService) Register(input model.RegisterInput) (*model.User, error) {
 	return repository.CreateUser(user)
 }
 
-// Login verifies credentials and returns a JWT on success.
+
 func (s *AuthService) Login(input model.LoginInput) (string, error) {
-	user, err := repository.FindUserByEmail(input.Email)
-	if err != nil {
-		return "", errors.New("invalid credentials")
-	}
+    user, err := repository.FindUserByEmail(input.Email)
+    if err != nil {
+        return "", errors.New("invalid credentials")
+    }
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		return "", errors.New("invalid credentials")
-	}
+    if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+        return "", errors.New("invalid credentials")
+    }
 
-	claims := jwt.MapClaims{
-		"user_id": user.ID.Hex(),
-		"email":   user.Email,
-		"exp":     time.Now().Add(72 * time.Hour).Unix(),
-	}
+    
+    claims := jwt.MapClaims{
+        "user_id": user.ID.Hex(),
+        "email":   user.Email,
+        "role":    user.Role, 
+        "exp":     time.Now().Add(72 * time.Hour).Unix(),
+    }
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	secret := os.Getenv("JWT_SECRET")
-	if secret == "" {
-		secret = "secret" // fallback for development
-	}
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    secret := os.Getenv("JWT_SECRET")
+    if secret == "" {
+        secret = "secret" 
+    }
 
-	tokStr, err := token.SignedString([]byte(secret))
-	if err != nil {
-		return "", err
-	}
+    tokStr, err := token.SignedString([]byte(secret))
+    if err != nil {
+        return "", err
+    }
 
-	return tokStr, nil
+    return tokStr, nil
 }
 
-// GetProfile retrieves a user by ID. This is used by the controller after
-// extracting the ID from the JWT payload.
+
 func (s *AuthService) GetProfile(userID string) (*model.User, error) {
 	return repository.FindUserByID(userID)
 }
 
-// SeedUsers ensures a set of default accounts exist in the database. The
-// method is idempotent: already-existing email addresses are skipped.
-func (s *AuthService) SeedUsers() {
-	defaults := []model.RegisterInput{
-		{Name: "Administrator", Email: "admin@local", Password: "admin123", Role: "admin"},
-		{Name: "Cashier", Email: "kasir@local", Password: "kasir123", Role: "kasir"},
-		{Name: "Owner", Email: "owner@local", Password: "owner123", Role: "owner"},
-		{Name: "Barber", Email: "barber@local", Password: "barber123", Role: "barber"},
-	}
 
-	for _, u := range defaults {
-		if _, err := s.Register(u); err != nil {
-			// ignore existing users, log others
-			if err.Error() == "email already registered" {
-				continue
-			}
-			// simple logging; avoid import cycle by using standard log
-			log.Printf("seeding user %s: %v", u.Email, err)
-		}
-	}
+func (s *AuthService) SeedUsers() {
+    defaults := []model.RegisterInput{
+        {Name: "Administrator", Email: "admin@local", Password: "admin123", Role: "admin"},
+        {Name: "Cashier", Email: "cashier@local", Password: "cashier123", Role: "cashier"}, 
+        {Name: "Owner", Email: "owner@local", Password: "owner123", Role: "owner"},
+        {Name: "Barber", Email: "barber@local", Password: "barber123", Role: "barber"},
+    }
+
+    for _, u := range defaults {
+        _, err := s.Register(u)
+        if err != nil {
+            // UBAH "exists" JADI "registered" SESUAI DENGAN ERROR DI REGISTER
+            if err.Error() == "email already registered" {
+                continue
+            }
+            log.Printf("Seeding error for %s: %v", u.Email, err)
+        } else {
+            log.Printf("User %s created successfully", u.Email)
+        }
+    }
 }

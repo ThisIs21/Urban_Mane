@@ -1,61 +1,97 @@
 package middleware
 
 import (
-	"errors"
-	"net/http"
-	"os"
-	"strings"
+    "net/http"
+    "os"
+    "strings"
 
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+    "github.com/gin-gonic/gin"
+    "github.com/golang-jwt/jwt/v4"
 )
 
-// AuthMiddleware verifies a Bearer JWT and injects the user ID into context.
 func AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing authorization header"})
-			return
-		}
+    return func(ctx *gin.Context) {
+        authHeader := ctx.GetHeader("Authorization")
+        if authHeader == "" {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
+            ctx.Abort()
+            return
+        }
 
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization format"})
-			return
-		}
+        parts := strings.Split(authHeader, " ")
+        if len(parts) != 2 || parts[0] != "Bearer" {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization format"})
+            ctx.Abort()
+            return
+        }
 
-		tokenString := parts[1]
-		secret := os.Getenv("JWT_SECRET")
-		if secret == "" {
-			secret = "secret"
-		}
+        tokenString := parts[1]
 
-		token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, errors.New("unexpected signing method")
-			}
-			return []byte(secret), nil
-		})
+        token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+            if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+                return nil, jwt.ErrSignatureInvalid
+            }
+            secret := os.Getenv("JWT_SECRET")
+            if secret == "" {
+                secret = "secret" // fallback
+            }
+            return []byte(secret), nil
+        })
 
-		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
-			return
-		}
+        if err != nil || !token.Valid {
+            ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
+            ctx.Abort()
+            return
+        }
 
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token claims"})
-			return
-		}
+        claims, ok := token.Claims.(jwt.MapClaims)
+        if !ok {
+            ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse claims"})
+            ctx.Abort()
+            return
+        }
 
-		userID, ok := claims["user_id"].(string)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token claims"})
-			return
-		}
+        // DEBUG: Print claims to console to see what we get
+        // log.Printf("Claims: %+v", claims) 
 
-		c.Set("user_id", userID)
-		c.Next()
-	}
+        ctx.Set("user_id", claims["user_id"])
+        ctx.Set("role", claims["role"]) // PENTING: Set role ke context
+
+        ctx.Next()
+    }
+}
+
+func RoleMiddleware(roles ...string) gin.HandlerFunc {
+    return func(ctx *gin.Context) {
+        userRole, exists := ctx.Get("role")
+        if !exists {
+            // JIKA ERROR INI YANG MUNCUL, BERARTI LINE DI ATAS (ctx.Set) GAGAL
+            ctx.JSON(http.StatusForbidden, gin.H{"error": "Role not found in context"})
+            ctx.Abort()
+            return
+        }
+
+        roleStr, ok := userRole.(string)
+        if !ok {
+            ctx.JSON(http.StatusForbidden, gin.H{"error": "Role is invalid type"})
+            ctx.Abort()
+            return
+        }
+
+        valid := false
+        for _, r := range roles {
+            if r == roleStr {
+                valid = true
+                break
+            }
+        }
+
+        if !valid {
+            ctx.JSON(http.StatusForbidden, gin.H{"error": "You do not have permission"})
+            ctx.Abort()
+            return
+        }
+
+        ctx.Next()
+    }
 }
