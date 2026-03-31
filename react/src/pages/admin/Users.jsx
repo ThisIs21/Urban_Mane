@@ -16,8 +16,9 @@ const Users = () => {
 
   // Form Data
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', role: 'cashier', phone: ''
+    name: '', email: '', password: '', role: 'cashier', phone: '', isActive: true, photoUrl: ''
   });
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   // Fetch Data
   const fetchUsers = async () => {
@@ -41,7 +42,8 @@ const Users = () => {
   // Handlers
   const handleOpenCreate = () => {
     setCurrentUser(null); // Reset current user
-    setFormData({ name: '', email: '', password: '', role: 'cashier', phone: '' });
+    setFormData({ name: '', email: '', password: '', role: 'cashier', phone: '', isActive: true, photoUrl: '' });
+    setPhotoPreview(null);
     setIsModalOpen(true);
   };
 
@@ -52,8 +54,11 @@ const Users = () => {
       email: user.email,
       password: '', // Password dikosongkan saat edit
       role: user.role,
-      phone: user.phone || ''
+      phone: user.phone || '',
+      isActive: user.isActive !== undefined ? user.isActive : true,
+      photoUrl: user.photoUrl || ''
     });
+    setPhotoPreview(user.photoUrl || null);
     setIsModalOpen(true);
   };
 
@@ -92,13 +97,13 @@ const Users = () => {
   // Role Badge Colors
   const getRoleColor = (role) => {
     switch(role) {
-      case 'admin': return 'bg-gold text-black';
+      case 'admin': return 'bg-yellow-600 text-white';
       case 'owner': return 'bg-purple-600 text-white';
       case 'cashier': return 'bg-blue-600 text-white';
       case 'barber': return 'bg-green-600 text-white';
       default: return 'bg-gray-600 text-white';
     }
-  }
+  };
 
   return (
     <div>
@@ -138,23 +143,28 @@ const Users = () => {
               <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Name</th>
               <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Email</th>
               <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Role</th>
+              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Status</th>
               <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Phone</th>
               <th className="p-4 text-xs uppercase text-center" style={{ color: 'var(--color-muted)' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="5" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>Loading...</td></tr>
+              <tr><td colSpan="6" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>Loading...</td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan="5" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>No users found.</td></tr>
+              <tr><td colSpan="6" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>No users found.</td></tr>
             ) : (
               users.map((user) => (
                 <tr key={user.id} className="border-b border-border hover:bg-hover transition-colors" style={{ borderColor: 'var(--color-border)' }}>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: 'var(--color-gold)', color: 'black' }}>
-                        {user.name?.charAt(0).toUpperCase()}
-                      </div>
+                      {user.photoUrl ? (
+                        <img src={user.photoUrl} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: 'var(--color-gold)', color: 'black' }}>
+                          {user.name?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <span className="font-medium text-white">{user.name}</span>
                     </div>
                   </td>
@@ -162,6 +172,11 @@ const Users = () => {
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
                       {user.role}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.isActive ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                      {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   <td className="p-4 text-sm" style={{ color: 'var(--color-muted)' }}>{user.phone || '-'}</td>
@@ -246,6 +261,45 @@ const Users = () => {
               className="w-full p-2 rounded border focus:outline-none focus:border-gold"
               style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
             />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Status</label>
+            <select 
+              value={formData.isActive ? 'active' : 'inactive'} 
+              onChange={(e) => setFormData({...formData, isActive: e.target.value === 'active'})}
+              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
+              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Profile Photo</label>
+            <div className="flex gap-3 items-end">
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setPhotoPreview(reader.result);
+                      setFormData({...formData, photoUrl: reader.result});
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="w-full p-2 rounded border focus:outline-none focus:border-gold text-sm"
+                style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
+              />
+            </div>
+            {photoPreview && (
+              <div className="mt-2 flex justify-center">
+                <img src={photoPreview} alt="Profile preview" className="w-16 h-16 rounded-full object-cover" />
+              </div>
+            )}
           </div>
           
           <div className="flex gap-3 pt-4">

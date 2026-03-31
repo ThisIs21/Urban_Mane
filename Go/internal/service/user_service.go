@@ -44,6 +44,7 @@ func (s *userService) CreateUser(input model.RegisterInput) (*model.User, error)
         Password: string(hashedPassword),
         Role:     input.Role,
         Phone:    input.Phone,
+        PhotoUrl: "",
         IsActive: true, // Default aktif
     }
 
@@ -85,6 +86,14 @@ func (s *userService) UpdateUser(id string, input model.UpdateUserInput) (*model
         }
         existingUser.Password = string(hashedPassword)
     }
+
+    // Update PhotoUrl jika ada
+    if input.PhotoUrl != "" {
+        existingUser.PhotoUrl = input.PhotoUrl
+    }
+
+    // Update IsActive
+    existingUser.IsActive = input.IsActive
 
     err = repository.UpdateUser(id, *existingUser)
     if err != nil {

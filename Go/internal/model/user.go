@@ -15,6 +15,7 @@ type User struct {
     Password  string        `json:"-" bson:"password"` 
     Role      string        `json:"role" bson:"role"`  
     Phone     string        `json:"phone" bson:"phone"`
+    PhotoUrl  string        `json:"photoUrl" bson:"photoUrl"`
     IsActive  bool          `json:"isActive" bson:"isActive"`
     CreatedAt time.Time     `json:"createdAt" bson:"createdAt"`
     UpdatedAt time.Time     `json:"updatedAt" bson:"updatedAt"`
@@ -42,4 +43,6 @@ type UpdateUserInput struct {
     Password string `json:"password"` // Tidak wajib
     Role     string `json:"role"`
     Phone    string `json:"phone"`
+    PhotoUrl string `json:"photoUrl"`
+    IsActive bool   `json:"isActive"`
 }
