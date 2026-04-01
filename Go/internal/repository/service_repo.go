@@ -90,7 +90,7 @@ func FindServiceByID(id string) (*model.Service, error) {
 }
 
 // UpdateService mengupdate service yang ada
-func UpdateService(id string, service model.Service) (*model.Service, error) {
+func UpdateService(id string, svc model.Service) (*model.Service, error) {
 	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -102,12 +102,12 @@ func UpdateService(id string, service model.Service) (*model.Service, error) {
 
 	update := bson.M{
 		"$set": bson.M{
-			"name":             service.Name,
-			"price":            service.Price,
-			"duration":         service.Duration,
-			"category":         service.Category,
-			"requiredProducts": service.RequiredProducts,
-			"isActive":         service.IsActive,
+			"name":             svc.Name,
+			"price":            svc.Price,
+			"duration":         svc.Duration,
+			"category":         svc.Category,
+			"requiredProducts": svc.RequiredProducts,
+			"isActive":         svc.IsActive,
 			"updatedAt":        time.Now(),
 		},
 	}
@@ -117,8 +117,8 @@ func UpdateService(id string, service model.Service) (*model.Service, error) {
 		return nil, err
 	}
 
-	service.ID = objID
-	return &service, nil
+	svc.ID = objID
+	return &svc, nil
 }
 
 // DeleteService menghapus service
