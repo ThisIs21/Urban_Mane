@@ -54,7 +54,7 @@ func (s *serviceService) CreateService(input model.ServiceInput) (*model.Service
 // UpdateService mengupdate service yang ada
 func (s *serviceService) UpdateService(id string, input model.ServiceInput) (*model.Service, error) {
 	// Validasi ID
-	objID, err := bson.ObjectIDFromHex(id)
+	_, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, errors.New("ID tidak valid")
 	}
