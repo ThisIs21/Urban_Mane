@@ -10,6 +10,7 @@ import BarberDashboard from "./pages/barber/Dashboard";
 import Login from "./pages/Login";
 import AdminLayout from "./components/layout/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
+import Products from './pages/admin/Products';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -42,6 +43,7 @@ function App() {
           >
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<Users />} />
+            <Route path="products" element={<Products />} />
           </Route>
 
           {/* Owner Routes */}

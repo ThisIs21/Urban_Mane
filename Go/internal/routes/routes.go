@@ -8,7 +8,7 @@ import (
 )
 
 // RegisterRoutes attaches all route groups to the main engine
-func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController) {
+func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController) {
 
 	// Public
 	auth := r.Group("/api/v1/auth")
@@ -34,6 +34,30 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 			users.DELETE("/:id", userController.DeleteUser)
 		}
 
-		// ... other routes like products, etc
+		// Products Management (Admin Only)
+		products := api.Group("/products")
+		products.Use(middleware.RoleMiddleware("admin"))
+		{
+			products.GET("", productController.GetProducts)
+			products.POST("", productController.CreateProduct)
+			products.PUT("/:id", productController.UpdateProduct)
+			products.DELETE("/:id", productController.DeleteProduct)
+		}
+
+		// Upload endpoint untuk file
+		api.POST("/upload", productController.UploadFile)
+
+		// Services Management (Admin Only)
+		services := api.Group("/services")
+		services.Use(middleware.RoleMiddleware("admin"))
+		{
+			services.GET("", serviceController.GetServices)
+			services.POST("", serviceController.CreateService)
+			services.PUT("/:id", serviceController.UpdateService)
+			services.DELETE("/:id", serviceController.DeleteService)
+		}
 	}
+
+	// Static files untuk uploaded images
+	r.Static("/uploads", "./uploads")
 }
