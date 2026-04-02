@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import AdminLayout from "./components/layout/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Products from './pages/admin/Products';
+import Bundle from './pages/admin/Bundle';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -44,6 +45,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="products" element={<Products />} />
+            <Route path="bundles" element={<Bundle />} />
           </Route>
 
           {/* Owner Routes */}

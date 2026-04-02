@@ -8,7 +8,7 @@ import (
 )
 
 // RegisterRoutes attaches all route groups to the main engine
-func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController) {
+func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController, bundleController *controller.BundleController) {
 
 	// Public
 	auth := r.Group("/api/v1/auth")
@@ -55,6 +55,16 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 			services.POST("", serviceController.CreateService)
 			services.PUT("/:id", serviceController.UpdateService)
 			services.DELETE("/:id", serviceController.DeleteService)
+		}
+
+		// Bundles Management (Admin Only)
+		bundles := api.Group("/bundles")
+		bundles.Use(middleware.RoleMiddleware("admin"))
+		{
+			bundles.GET("", bundleController.GetBundles)
+			bundles.POST("", bundleController.CreateBundle)
+			bundles.PUT("/:id", bundleController.UpdateBundle)
+			bundles.DELETE("/:id", bundleController.DeleteBundle)
 		}
 	}
 

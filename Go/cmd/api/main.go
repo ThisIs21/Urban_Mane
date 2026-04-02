@@ -23,6 +23,9 @@ func main() {
 
 	config.ConnectDB()
 	repository.InitUserCollection()
+	repository.InitProductCollection()
+	repository.InitServiceCollection()
+	repository.InitBundleCollection()
 
 	// === INIT LAYERS ===
 
@@ -43,6 +46,10 @@ func main() {
 	serviceService := service.NewServiceService()
 	serviceController := controller.NewServiceController(serviceService)
 
+	// Bundle
+	bundleService := service.NewBundleService()
+	bundleController := controller.NewBundleController(bundleService)
+
 	// Router
 	r := gin.Default()
 
@@ -59,7 +66,7 @@ func main() {
 	})
 
 	// Register Routes
-	routes.RegisterRoutes(r, authController, userController, productController, serviceController)
+	routes.RegisterRoutes(r, authController, userController, productController, serviceController, bundleController)
 
 	// Run
 	port := os.Getenv("PORT")

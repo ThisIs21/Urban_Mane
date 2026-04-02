@@ -4,16 +4,21 @@ import (
 	"context"
 	"errors"
 	"time"
+	"urban-mane/config"
 	"urban-mane/internal/model"
-	"urban-mane/pkg/db"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+var serviceCollection *mongo.Collection
+
+func InitServiceCollection() {
+	serviceCollection = config.DB.Collection("services")
+}
+
 // GetAllServices mengambil semua services dengan opsi search
 func GetAllServices(search string) ([]model.Service, error) {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -29,7 +34,7 @@ func GetAllServices(search string) ([]model.Service, error) {
 		}
 	}
 
-	cursor, err := collection.Find(ctx, filter)
+	cursor, err := serviceCollection.Find(ctx, filter)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +54,6 @@ func GetAllServices(search string) ([]model.Service, error) {
 
 // CreateService membuat service baru di database
 func CreateService(service model.Service) (*model.Service, error) {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -57,7 +61,7 @@ func CreateService(service model.Service) (*model.Service, error) {
 	service.CreatedAt = time.Now()
 	service.UpdatedAt = time.Now()
 
-	result, err := collection.InsertOne(ctx, service)
+	result, err := serviceCollection.InsertOne(ctx, service)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +72,6 @@ func CreateService(service model.Service) (*model.Service, error) {
 
 // FindServiceByID mencari service berdasarkan ID
 func FindServiceByID(id string) (*model.Service, error) {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -78,7 +81,7 @@ func FindServiceByID(id string) (*model.Service, error) {
 	}
 
 	var service model.Service
-	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&service)
+	err = serviceCollection.FindOne(ctx, bson.M{"_id": objID}).Decode(&service)
 	if err == mongo.ErrNoDocuments {
 		return nil, errors.New("service tidak ditemukan")
 	}
@@ -91,7 +94,6 @@ func FindServiceByID(id string) (*model.Service, error) {
 
 // UpdateService mengupdate service yang ada
 func UpdateService(id string, svc model.Service) (*model.Service, error) {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -112,7 +114,7 @@ func UpdateService(id string, svc model.Service) (*model.Service, error) {
 		},
 	}
 
-	_, err = collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
+	_, err = serviceCollection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +125,6 @@ func UpdateService(id string, svc model.Service) (*model.Service, error) {
 
 // DeleteService menghapus service
 func DeleteService(id string) error {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -132,7 +133,7 @@ func DeleteService(id string) error {
 		return errors.New("ID tidak valid")
 	}
 
-	result, err := collection.DeleteOne(ctx, bson.M{"_id": objID})
+	result, err := serviceCollection.DeleteOne(ctx, bson.M{"_id": objID})
 	if err != nil {
 		return err
 	}
@@ -146,11 +147,10 @@ func DeleteService(id string) error {
 
 // GetServicesByCategory mengambil services berdasarkan kategori
 func GetServicesByCategory(category string) ([]model.Service, error) {
-	collection := db.GetCollection("services")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cursor, err := collection.Find(ctx, bson.M{"category": category, "isActive": true})
+	cursor, err := serviceCollection.Find(ctx, bson.M{"category": category, "isActive": true})
 	if err != nil {
 		return nil, err
 	}
