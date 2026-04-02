@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
-// use relative path since Vite has no alias configured
 import userService from '../../services/userService';
 import Modal from '../../components/shared/Modal';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
   
-  // State untuk Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setDeleteOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // Untuk Edit
-  const [deleteTarget, setDeleteTarget] = useState(null); // Untuk Delete
+  const [currentUser, setCurrentUser] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // Form Data
   const [formData, setFormData] = useState({
     name: '', email: '', password: '', role: 'cashier', phone: '', isActive: true, photoUrl: ''
   });
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  // Fetch Data
+  const roles = ['admin', 'owner', 'cashier', 'barber'];
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -34,14 +34,21 @@ const Users = () => {
     }
   };
 
-  // refetch whenever the search query changes
   useEffect(() => {
     fetchUsers();
   }, [search]);
 
-  // Handlers
+  // Filter logic
+  useEffect(() => {
+    let filtered = users;
+    if (roleFilter) {
+      filtered = filtered.filter(u => u.role === roleFilter);
+    }
+    setFilteredUsers(filtered);
+  }, [users, roleFilter]);
+
   const handleOpenCreate = () => {
-    setCurrentUser(null); // Reset current user
+    setCurrentUser(null);
     setFormData({ name: '', email: '', password: '', role: 'cashier', phone: '', isActive: true, photoUrl: '' });
     setPhotoPreview(null);
     setIsModalOpen(true);
@@ -52,7 +59,7 @@ const Users = () => {
     setFormData({
       name: user.name,
       email: user.email,
-      password: '', // Password dikosongkan saat edit
+      password: '',
       role: user.role,
       phone: user.phone || '',
       isActive: user.isActive !== undefined ? user.isActive : true,
@@ -66,16 +73,14 @@ const Users = () => {
     e.preventDefault();
     try {
       if (currentUser) {
-        // Update
         await userService.updateUser(currentUser.id, formData);
         alert("User berhasil diupdate!");
       } else {
-        // Create
         await userService.createUser(formData);
         alert("User berhasil dibuat!");
       }
       setIsModalOpen(false);
-      fetchUsers(); // Refresh data
+      fetchUsers();
     } catch (err) {
       alert(err.response?.data?.error || "Terjadi kesalahan");
     }
@@ -94,10 +99,9 @@ const Users = () => {
     }
   };
 
-  // Role Badge Colors
   const getRoleColor = (role) => {
     switch(role) {
-      case 'admin': return 'bg-yellow-600 text-white';
+      case 'admin': return 'bg-amber-500 text-black';
       case 'owner': return 'bg-purple-600 text-white';
       case 'cashier': return 'bg-blue-600 text-white';
       case 'barber': return 'bg-green-600 text-white';
@@ -105,225 +109,231 @@ const Users = () => {
     }
   };
 
+  // ========== PHOTO UPLOAD HANDLER ==========
+  // When user selects a file from input, upload it to backend
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Send to backend /upload endpoint via userService
+      const response = await userService.uploadPhoto(formData);
+      console.log('Upload response:', response);  // DEBUG
+      
+      // Backend returns URL like "/images/products/photo_1234.jpg"
+      // Save to formData (will be sent to database)
+      const url = response.url;
+      console.log('URL from upload:', url);  // DEBUG
+      setFormData(prev => ({ ...prev, photoUrl: url }));
+      
+      // Show preview - store the relative URL, it will be converted to full URL by getImageUrl() in display
+      setPhotoPreview(url);
+    } catch (err) {
+      alert('Gagal upload foto');
+      console.error('Upload error:', err);  // DEBUG
+    }
+  };
+
   return (
-    <div>
-      {/* Header Section */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6">
+      {/* HEADER */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Users & Staff Management</h1>
-          <p style={{ color: 'var(--color-muted)' }}>Kelola akun pengguna sistem</p>
+          <h1 className="text-3xl font-bold text-white">Users & Staff</h1>
+          <p className="text-gray-400 mt-1">Manage system users and staff accounts</p>
         </div>
         <button 
           onClick={handleOpenCreate}
-          className="px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all duration-200"
-          style={{ backgroundColor: 'var(--color-gold)', color: 'black' }}
+          className="px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-all duration-200 hover:shadow-lg"
+          style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           Add User
         </button>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-4">
+      {/* FILTERS & SEARCH */}
+      <div className="flex gap-4 flex-wrap">
         <input
           type="text"
-          placeholder="Cari nama atau email..."
+          placeholder="Search name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-1/3 px-4 py-2 rounded-lg border focus:outline-none"
-          style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)', color: 'white' }}
+          className="flex-1 min-w-[200px] px-4 py-2 rounded-lg border transition-all"
+          style={{ 
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333333',
+            color: '#F0F0F0'
+          }}
         />
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="px-4 py-2 rounded-lg border transition-all"
+          style={{
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333333',
+            color: '#F0F0F0'
+          }}
+        >
+          <option value="">All Roles</option>
+          {roles.map(role => (
+            <option key={role} value={role}>{role.charAt(0).toUpperCase() + role.slice(1)}</option>
+          ))}
+        </select>
       </div>
 
-      {/* Table */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden" style={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)' }}>
-        <table className="w-full text-left">
-          <thead style={{ backgroundColor: 'var(--color-secondary)' }}>
-            <tr className="border-b border-border" style={{ borderColor: 'var(--color-border)' }}>
-              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Name</th>
-              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Email</th>
-              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Role</th>
-              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Status</th>
-              <th className="p-4 text-xs uppercase" style={{ color: 'var(--color-muted)' }}>Phone</th>
-              <th className="p-4 text-xs uppercase text-center" style={{ color: 'var(--color-muted)' }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan="6" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>Loading...</td></tr>
-            ) : users.length === 0 ? (
-              <tr><td colSpan="6" className="text-center p-8" style={{ color: 'var(--color-muted)' }}>No users found.</td></tr>
-            ) : (
-              users.map((user) => (
-                <tr key={user.id} className="border-b border-border hover:bg-hover transition-colors" style={{ borderColor: 'var(--color-border)' }}>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
+      {/* LOADING */}
+      {loading && <p className="text-center text-gray-400">Loading...</p>}
+
+      {/* TABLE */}
+      {!loading && filteredUsers.length > 0 ? (
+        <div className="rounded-xl overflow-hidden shadow-2xl border" style={{ borderColor: '#333333' }}>
+          <div className="overflow-x-auto" style={{ backgroundColor: '#1A1A1A' }}>
+            <table className="w-full">
+              <thead style={{ backgroundColor: '#0F0F0F' }}>
+                <tr className="border-b" style={{ borderColor: '#333333' }}>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Photo</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Email</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Role</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Phone</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Status</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold" style={{ color: '#D4AF37' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  console.log('Rendering users, count:', filteredUsers.length);  // DEBUG
+                  if (filteredUsers.length > 0) {
+                    console.log('First user:', filteredUsers[0]);  // DEBUG
+                    console.log('First user photoUrl:', filteredUsers[0].photoUrl);  // DEBUG
+                  }
+                  return filteredUsers.map((user, idx) => (
+                  <tr key={user.id} className="border-b hover:opacity-75 transition-all" style={{ borderColor: '#333333' }}>
+                    {/* PHOTO COLUMN - Display user photo or initial */}
+                    <td className="px-6 py-4">
                       {user.photoUrl ? (
-                        <img src={user.photoUrl} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                        // IMPORTANT: userService.getImageUrl() converts relative paths to full backend URLs
+                        // Example: "/images/products/photo.jpg" → "http://localhost:8080/images/products/photo.jpg"
+                        <img 
+                          src={userService.getImageUrl(user.photoUrl)} 
+                          alt={user.name} 
+                          className="w-10 h-10 rounded-full object-cover" 
+                          onError={(e) => {
+                            console.log('Image load failed for:', user.photoUrl, 'Full URL:', userService.getImageUrl(user.photoUrl));
+                            e.target.style.display = 'none';
+                          }}
+                        />
                       ) : (
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: 'var(--color-gold)', color: 'black' }}>
-                          {user.name?.charAt(0).toUpperCase()}
+                        // If no photo, show initial letter
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-semibold" style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}>
+                          {user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="font-medium text-white">{user.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm" style={{ color: 'var(--color-muted)' }}>{user.email}</td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.isActive ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-                      {user.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-sm" style={{ color: 'var(--color-muted)' }}>{user.phone || '-'}</td>
-                  <td className="p-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <button onClick={() => handleOpenEdit(user)} className="p-2 rounded hover:bg-blue-600/20 transition-colors" style={{ color: '#3b82f6' }} title="Edit">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </td>
+                    <td className="px-6 py-4 text-gray-200 font-medium">{user.name}</td>
+                    <td className="px-6 py-4 text-gray-300 text-sm">{user.email}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(user.role)}`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-300 text-sm">{user.phone || '-'}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.isActive ? 'bg-green-900 text-green-200' : 'bg-gray-700 text-gray-300'}`}>
+                        {user.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleOpenEdit(user)}
+                        className="px-3 py-1 rounded text-sm font-medium transition-all mr-2"
+                        style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
+                      >
+                        Edit
                       </button>
-                      <button onClick={() => { setDeleteTarget(user); setDeleteOpen(true); }} className="p-2 rounded hover:bg-red-600/20 transition-colors" style={{ color: 'var(--color-danger)' }} title="Delete">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      <button
+                        onClick={() => { setDeleteTarget(user); setDeleteOpen(true); }}
+                        className="px-3 py-1 rounded text-sm font-medium transition-all bg-red-600 text-white hover:bg-red-700"
+                      >
+                        Delete
                       </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+                    </td>
+                  </tr>
+                  ));
+                })()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        !loading && <p className="text-center text-gray-400 py-8">No users found</p>
+      )}
 
-      {/* Create/Edit Modal */}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        title={currentUser ? "Edit User" : "Create New User"}
-      >
+      {/* CREATE/EDIT MODAL */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={currentUser ? 'Edit User' : 'Add New User'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Name</label>
-            <input 
-              type="text" 
-              value={formData.name} 
-              onChange={(e) => setFormData({...formData, name: e.target.value})} 
-              required
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            />
+            <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+            <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 rounded-lg border" style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}} />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Email</label>
-            <input 
-              type="email" 
-              value={formData.email} 
-              onChange={(e) => setFormData({...formData, email: e.target.value})} 
-              required
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            />
+            <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+            <input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 rounded-lg border" style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}} />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Password</label>
-            <input 
-              type="password" 
-              value={formData.password} 
-              onChange={(e) => setFormData({...formData, password: e.target.value})} 
-              placeholder={currentUser ? "Kosongkan jika tidak ganti" : ""}
-              required={!currentUser} // Wajib jika create, tidak wajib jika edit
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            />
+            <label className="block text-sm font-medium text-gray-300 mb-1">Password {currentUser && '(leave empty to keep current)'}</label>
+            <input type="password" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full px-3 py-2 rounded-lg border" style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}} />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Role</label>
-            <select 
-              value={formData.role} 
-              onChange={(e) => setFormData({...formData, role: e.target.value})} 
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            >
-              <option value="admin">Admin</option>
-              <option value="owner">Owner</option>
-              <option value="cashier">Cashier</option>
-              <option value="barber">Barber</option>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Role</label>
+            <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="w-full px-3 py-2 rounded-lg border" style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}>
+              {roles.map(role => (<option key={role} value={role}>{role}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Phone</label>
-            <input 
-              type="text" 
-              value={formData.phone} 
-              onChange={(e) => setFormData({...formData, phone: e.target.value})} 
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            />
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phone</label>
+            <input type="text" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full px-3 py-2 rounded-lg border" style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}} />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Status</label>
-            <select 
-              value={formData.isActive ? 'active' : 'inactive'} 
-              onChange={(e) => setFormData({...formData, isActive: e.target.value === 'active'})}
-              className="w-full p-2 rounded border focus:outline-none focus:border-gold"
-              style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase mb-1" style={{ color: 'var(--color-muted)' }}>Profile Photo</label>
-            <div className="flex gap-3 items-end">
-              <input 
-                type="file" 
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setPhotoPreview(reader.result);
-                      setFormData({...formData, photoUrl: reader.result});
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
-                className="w-full p-2 rounded border focus:outline-none focus:border-gold text-sm"
-                style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', color: 'white' }}
-              />
-            </div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Profile Photo</label>
+            {/* IMPORTANT: Photo preview - use userService.getImageUrl() to get full URL */}
             {photoPreview && (
-              <div className="mt-2 flex justify-center">
-                <img src={photoPreview} alt="Profile preview" className="w-16 h-16 rounded-full object-cover" />
-              </div>
+              <img 
+                src={userService.getImageUrl(photoPreview)} 
+                alt="Preview" 
+                className="w-20 h-20 rounded-lg mb-2 object-cover" 
+                onError={(e) => {
+                  console.log('Preview image error:', photoPreview, 'Full URL:', userService.getImageUrl(photoPreview));
+                  e.target.style.display = 'none';
+                }}
+              />
             )}
+            <input type="file" onChange={handlePhotoUpload} className="w-full" />
           </div>
-          
-          <div className="flex gap-3 pt-4">
-            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2 rounded border border-border hover:bg-hover" style={{ color: 'white', borderColor: 'var(--color-border)' }}>Cancel</button>
-            <button type="submit" className="flex-1 py-2 rounded font-semibold" style={{ backgroundColor: 'var(--color-gold)', color: 'black' }}>
-              {currentUser ? "Update" : "Create"}
-            </button>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={formData.isActive} onChange={(e) => setFormData({...formData, isActive: e.target.checked})} className="rounded" />
+            <span className="text-sm font-medium text-gray-300">Active</span>
+          </label>
+          <div className="flex gap-2 pt-4 border-t" style={{borderColor: '#333333'}}>
+            <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2 rounded-lg border transition-all" style={{borderColor: '#333333', color: '#F0F0F0'}}>Cancel</button>
+            <button type="submit" className="flex-1 px-4 py-2 rounded-lg font-semibold text-white transition-all" style={{backgroundColor: '#D4AF37', color: '#0F0F0F'}}>Save</button>
           </div>
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
+      {/* DELETE MODAL */}
       <Modal isOpen={isDeleteOpen} onClose={() => setDeleteOpen(false)} title="Confirm Delete">
-        <div className="text-center">
-          <p className="mb-6" style={{ color: 'var(--color-muted)' }}>
-            Yakin ingin menghapus user <strong className="text-white">{deleteTarget?.name}</strong>?
-          </p>
-          <div className="flex gap-3">
-            <button onClick={() => setDeleteOpen(false)} className="flex-1 py-2 rounded border" style={{ color: 'white', borderColor: 'var(--color-border)' }}>Cancel</button>
-            <button onClick={handleDelete} className="flex-1 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700">Delete</button>
-          </div>
+        <p className="text-gray-300 mb-6">Are you sure you want to delete user <strong>{deleteTarget?.name}</strong>?</p>
+        <div className="flex gap-2">
+          <button onClick={() => setDeleteOpen(false)} className="flex-1 px-4 py-2 rounded-lg border transition-all" style={{borderColor: '#333333', color: '#F0F0F0'}}>Cancel</button>
+          <button onClick={handleDelete} className="flex-1 px-4 py-2 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700 transition-all">Delete</button>
         </div>
       </Modal>
-
     </div>
   );
 };

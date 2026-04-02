@@ -50,6 +50,7 @@ func (s *bundleService) CreateBundle(input model.BundleInput) (*model.Bundle, er
 	bundle := model.Bundle{
 		Name:        input.Name,
 		Description: input.Description,
+		Image:       input.Image,
 		Products:    input.Products,
 		Services:    input.Services,
 		BundlePrice: input.BundlePrice,
@@ -81,6 +82,7 @@ func (s *bundleService) UpdateBundle(id string, input model.BundleInput) (*model
 	bundle := model.Bundle{
 		Name:        input.Name,
 		Description: input.Description,
+		Image:       input.Image,
 		Products:    input.Products,
 		Services:    input.Services,
 		BundlePrice: input.BundlePrice,

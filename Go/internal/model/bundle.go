@@ -24,6 +24,7 @@ type Bundle struct {
 	ID          bson.ObjectID   `bson:"_id,omitempty" json:"id,omitempty"`
 	Name        string          `bson:"name" json:"name"`
 	Description string          `bson:"description" json:"description"`
+	Image       string          `bson:"image" json:"image"`
 	Products    []BundleProduct `bson:"products" json:"products"`
 	Services    []BundleService `bson:"services" json:"services"`
 	BundlePrice int             `bson:"bundlePrice" json:"bundlePrice"`
@@ -37,6 +38,7 @@ type Bundle struct {
 type BundleInput struct {
 	Name        string          `json:"name" binding:"required"`
 	Description string          `json:"description"`
+	Image       string          `json:"image"`
 	Products    []BundleProduct `json:"products" binding:"required"`
 	Services    []BundleService `json:"services"`
 	BundlePrice int             `json:"bundlePrice" binding:"required"`

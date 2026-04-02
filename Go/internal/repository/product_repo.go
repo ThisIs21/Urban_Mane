@@ -1,16 +1,16 @@
 package repository
 
 import (
-    "context"
-    "errors"
-    "time"
+	"context"
+	"errors"
+	"time"
 
-    "urban-mane/config"
-    "urban-mane/internal/model"
+	"urban-mane/config"
+	"urban-mane/internal/model"
 
-    "go.mongodb.org/mongo-driver/v2/bson"
-    "go.mongodb.org/mongo-driver/v2/mongo"
-    "go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 var productCollection *mongo.Collection
@@ -99,18 +99,33 @@ func UpdateProduct(id string, product model.Product) error {
 }
 
 func DeleteProduct(id string) error {
-    objID, err := bson.ObjectIDFromHex(id)
-    if err != nil {
-        return err
-    }
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
 
-    filter := bson.M{"_id": objID}
-    result, err := productCollection.DeleteOne(context.TODO(), filter)
-    if err != nil {
-        return err
-    }
-    if result.DeletedCount == 0 {
-        return errors.New("product not found")
-    }
-    return nil
+	filter := bson.M{"_id": objID}
+	result, err := productCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	if result.DeletedCount == 0 {
+		return errors.New("product not found")
+	}
+	return nil
+}
+
+func DeductProductStock(id string, quantity int) error {
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("invalid product id")
+	}
+
+	_, err = productCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": objID},
+		bson.M{"$inc": bson.M{"stock": -quantity}},
+	)
+
+	return err
 }

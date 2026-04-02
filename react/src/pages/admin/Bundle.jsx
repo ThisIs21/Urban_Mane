@@ -9,6 +9,7 @@ const Bundle = () => {
   const [bundles, setBundles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editingBundle, setEditingBundle] = useState(null);
@@ -21,6 +22,7 @@ const Bundle = () => {
     services: [],
     bundlePrice: '',
     stock: '',
+    image: '',
     isActive: true
   });
 
@@ -34,6 +36,9 @@ const Bundle = () => {
   const [selectedProductId, setSelectedProductId] = useState('');
   const [selectedProductQty, setSelectedProductQty] = useState(1);
   const [selectedServiceId, setSelectedServiceId] = useState('');
+  
+  // ========== IMAGE PREVIEW ==========
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   // ========== FETCH FUNCTIONS ==========
 
@@ -79,6 +84,16 @@ const Bundle = () => {
     fetchAvailableProducts();
     fetchAvailableServices();
   }, [search]);
+
+  // ========== FILTER FUNCTION ==========
+  const getFilteredBundles = () => {
+    return bundles.filter(bundle => {
+      const matchesStatus = statusFilter === '' || 
+        (statusFilter === 'active' && bundle.isActive) || 
+        (statusFilter === 'inactive' && !bundle.isActive);
+      return matchesStatus;
+    });
+  };
 
   // ========== ADD/REMOVE PRODUCTS & SERVICES ==========
 
@@ -150,6 +165,19 @@ const Bundle = () => {
     }));
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await productService.uploadFile(file);
+      setFormData(prev => ({...prev, image: url}));
+      setPhotoPreview(url);
+    } catch (err) {
+      alert('Gagal upload foto');
+    }
+  };
+
   // ========== CRUD OPERATIONS ==========
 
   const handleOpenModal = (bundle = null) => {
@@ -162,8 +190,10 @@ const Bundle = () => {
         services: bundle.services || [],
         bundlePrice: bundle.bundlePrice,
         stock: bundle.stock,
+        image: bundle.image || '',
         isActive: bundle.isActive
       });
+      setPhotoPreview(bundle.image || null);
     } else {
       setEditingBundle(null);
       setFormData({
@@ -173,8 +203,10 @@ const Bundle = () => {
         services: [],
         bundlePrice: '',
         stock: '',
+        image: '',
         isActive: true
       });
+      setPhotoPreview(null);
     }
     setIsModalOpen(true);
   };
@@ -235,87 +267,133 @@ const Bundle = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: '#0F0F0F', minHeight: '100vh' }}>
       {/* HEADER */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Bundle Management</h1>
+        <h1 className="text-3xl font-bold" style={{ color: '#D4AF37' }}>Bundle Management</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          className="px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all duration-200 hover:shadow-lg"
+          style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
         >
-          + Tambah Bundle
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          Tambah Bundle
         </button>
       </div>
 
-      {/* SEARCH */}
+      {/* SEARCH & FILTERS */}
       <div className="flex gap-4">
         <input
           type="text"
           placeholder="Cari bundle..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 px-4 py-2 border rounded-lg"
+          className="flex-1 px-4 py-2 rounded-lg border transition-all"
+          style={{
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333333',
+            color: '#F0F0F0'
+          }}
         />
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="px-4 py-2 rounded-lg border transition-all"
+          style={{
+            backgroundColor: '#1A1A1A',
+            borderColor: '#333333',
+            color: '#F0F0F0'
+          }}
+        >
+          <option value="">Semua Status</option>
+          <option value="active">Aktif</option>
+          <option value="inactive">Tidak Aktif</option>
+        </select>
       </div>
 
       {/* LOADING */}
-      {loading && <p className="text-center text-gray-500">Memuat...</p>}
+      {loading && <p className="text-center py-8" style={{ color: '#999999' }}>Memuat...</p>}
 
       {/* BUNDLES TABLE */}
-      {!loading && bundles.length > 0 ? (
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="w-full">
-            <thead className="bg-gray-100 border-b">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Nama Bundle</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Harga</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Stok</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Produk/Service</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
-                <th className="px-6 py-3 text-center text-sm font-semibold text-gray-600">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bundles.map(bundle => (
-                <tr key={bundle.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900">{bundle.name}</td>
-                  <td className="px-6 py-4 text-gray-600">Rp {bundle.bundlePrice.toLocaleString('id-ID')}</td>
-                  <td className="px-6 py-4 text-gray-600">{bundle.stock}</td>
-                  <td className="px-6 py-4 text-gray-600">
-                    <div className="text-sm">
-                      <span className="font-semibold">{bundle.products.length}</span> produk,{' '}
-                      <span className="font-semibold">{bundle.services.length}</span> service
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${bundle.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                      {bundle.isActive ? 'Aktif' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleOpenModal(bundle)}
-                      className="text-blue-600 hover:text-blue-800 mr-4"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => {
-                        setDeleteTarget(bundle);
-                        setDeleteOpen(true);
-                      }}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Hapus
-                    </button>
-                  </td>
+      {!loading && getFilteredBundles().length > 0 ? (
+        <div className="rounded-xl overflow-hidden shadow-2xl border" style={{ borderColor: '#333333' }}>
+          <div className="overflow-x-auto" style={{ backgroundColor: '#1A1A1A' }}>
+            <table className="w-full">
+              <thead style={{ backgroundColor: '#0F0F0F' }}>
+                <tr className="border-b" style={{ borderColor: '#333333' }}>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Foto</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Nama Bundle</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Harga</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Stok</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Produk/Service</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Status</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold" style={{ color: '#D4AF37' }}>Aksi</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {getFilteredBundles().map(bundle => (
+                  <tr key={bundle.id} className="border-b hover:opacity-75 transition-all" style={{ borderColor: '#333333' }}>
+                    <td className="px-6 py-4">
+                      {bundle.image ? (
+                        <img 
+                          src={bundleService.getImageUrl(bundle.image)} 
+                          alt={bundle.name} 
+                          className="w-10 h-10 rounded object-cover" 
+                          onError={(e) => {
+                            console.log('Bundle image error:', bundle.image, 'Full URL:', bundleService.getImageUrl(bundle.image));
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded flex items-center justify-center text-xs font-semibold" style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}>
+                          -
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-gray-200 font-medium">{bundle.name}</td>
+                    <td className="px-6 py-4 text-white font-semibold">Rp {bundle.bundlePrice.toLocaleString('id-ID')}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${bundle.stock < 5 ? 'bg-red-900' : 'bg-green-900'}`}>
+                        {bundle.stock} pcs
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-300 text-sm">
+                      <div>
+                        <span className="font-semibold">{bundle.products.length}</span> produk,{' '}
+                        <span className="font-semibold">{bundle.services.length}</span> service
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${bundle.isActive ? 'bg-green-900 text-green-200' : 'bg-gray-700 text-gray-300'}`}>
+                        {bundle.isActive ? 'Aktif' : 'Tidak Aktif'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleOpenModal(bundle)}
+                        className="px-3 py-1 rounded text-sm font-medium transition-all mr-2"
+                        style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setDeleteTarget(bundle);
+                          setDeleteOpen(true);
+                        }}
+                        className="px-3 py-1 rounded text-sm font-medium transition-all bg-red-600 text-white hover:bg-red-700"
+                      >
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
-        !loading && <p className="text-center text-gray-500">Tidak ada data bundle</p>
+        !loading && <p className="text-center py-8" style={{ color: '#999999' }}>Tidak ada data bundle</p>
       )}
 
       {/* CREATE/EDIT MODAL */}
@@ -327,76 +405,103 @@ const Bundle = () => {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {/* BUNDLE NAME */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Bundle</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Nama Bundle</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 rounded-lg border"
+              style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
               placeholder="Contoh: Paket Haircut + Hair Powder"
             />
           </div>
 
           {/* DESCRIPTION */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Deskripsi</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 rounded-lg border"
+              style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
               placeholder="Deskripsi bundle..."
               rows="3"
             />
           </div>
 
-          {/* BUNDLE PRICE */}
+          {/* IMAGE UPLOAD */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Foto Bundle</label>
+            {photoPreview && (
+              <img 
+                src={bundleService.getImageUrl(photoPreview)} 
+                alt="Preview" 
+                className="w-20 h-20 rounded-lg mb-2 object-cover" 
+                onError={(e) => {
+                  console.log('Bundle preview error:', photoPreview, 'Full URL:', bundleService.getImageUrl(photoPreview));
+                  e.target.style.display = 'none';
+                }}
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="w-full px-3 py-2 rounded-lg border text-sm"
+              style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
+            />
+          </div>
+
+          {/* BUNDLE PRICE & STOCK */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Harga Bundle</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Harga Bundle</label>
               <input
                 type="number"
                 value={formData.bundlePrice}
                 onChange={(e) => setFormData(prev => ({...prev, bundlePrice: parseInt(e.target.value) || 0}))}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 rounded-lg border"
+                style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
                 placeholder="0"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stok Bundle</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Stok Bundle</label>
               <input
                 type="number"
                 value={formData.stock}
                 onChange={(e) => setFormData(prev => ({...prev, stock: parseInt(e.target.value) || 0}))}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 rounded-lg border"
+                style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
                 placeholder="0"
               />
             </div>
           </div>
 
           {/* ACTIVE TOGGLE */}
-          <div>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={formData.isActive}
-                onChange={(e) => setFormData(prev => ({...prev, isActive: e.target.checked}))}
-                className="rounded"
-              />
-              <span className="text-sm font-medium text-gray-700">Aktif</span>
-            </label>
+          <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', border: '1px solid' }}>
+            <input
+              type="checkbox"
+              id="isActive"
+              checked={formData.isActive}
+              onChange={(e) => setFormData(prev => ({...prev, isActive: e.target.checked}))}
+              className="rounded"
+            />
+            <label htmlFor="isActive" className="text-sm font-medium text-gray-300 cursor-pointer">Aktif</label>
           </div>
 
-          <hr />
+          <hr style={{ borderColor: '#333333' }} />
 
           {/* ADD PRODUCTS SECTION */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Tambah Produk</h3>
+            <h3 className="font-semibold mb-2" style={{ color: '#D4AF37' }}>Tambah Produk</h3>
             <div className="space-y-2">
               <div className="flex gap-2">
                 <select
                   value={selectedProductId}
                   onChange={(e) => setSelectedProductId(e.target.value)}
-                  className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 rounded-lg border text-sm"
+                  style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
                   disabled={productsLoading}
                 >
                   <option value="">Pilih Produk...</option>
@@ -408,12 +513,14 @@ const Bundle = () => {
                   type="number"
                   value={selectedProductQty}
                   onChange={(e) => setSelectedProductQty(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-20 px-3 py-2 border rounded-lg text-sm"
+                  className="w-20 px-3 py-2 rounded-lg border text-sm"
+                  style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
                   min="1"
                 />
                 <button
                   onClick={addProductToBundle}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                  style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
                 >
                   Tambah
                 </button>
@@ -424,14 +531,14 @@ const Bundle = () => {
           {/* SELECTED PRODUCTS */}
           {formData.products.length > 0 && (
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Produk Terpilih</h3>
+              <h3 className="font-semibold mb-2" style={{ color: '#D4AF37' }}>Produk Terpilih</h3>
               <div className="space-y-2">
                 {formData.products.map(p => (
-                  <div key={p.productId} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                    <span className="text-sm">{p.productName} x {p.quantity}</span>
+                  <div key={p.productId} className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', border: '1px solid' }}>
+                    <span className="text-sm text-gray-300">{p.productName} x {p.quantity}</span>
                     <button
                       onClick={() => removeProductFromBundle(p.productId)}
-                      className="text-red-600 hover:text-red-800 text-sm"
+                      className="text-red-500 hover:text-red-400 text-sm font-medium"
                     >
                       Hapus
                     </button>
@@ -441,16 +548,17 @@ const Bundle = () => {
             </div>
           )}
 
-          <hr />
+          <hr style={{ borderColor: '#333333' }} />
 
           {/* ADD SERVICES SECTION */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Tambah Service</h3>
+            <h3 className="font-semibold mb-2" style={{ color: '#D4AF37' }}>Tambah Service</h3>
             <div className="flex gap-2">
               <select
                 value={selectedServiceId}
                 onChange={(e) => setSelectedServiceId(e.target.value)}
-                className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                className="flex-1 px-3 py-2 rounded-lg border text-sm"
+                style={{backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0'}}
                 disabled={servicesLoading}
               >
                 <option value="">Pilih Service...</option>
@@ -460,7 +568,8 @@ const Bundle = () => {
               </select>
               <button
                 onClick={addServiceToBundle}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
               >
                 Tambah
               </button>
@@ -470,14 +579,14 @@ const Bundle = () => {
           {/* SELECTED SERVICES */}
           {formData.services.length > 0 && (
             <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Service Terpilih</h3>
+              <h3 className="font-semibold mb-2" style={{ color: '#D4AF37' }}>Service Terpilih</h3>
               <div className="space-y-2">
                 {formData.services.map(s => (
-                  <div key={s.serviceId} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                    <span className="text-sm">{s.serviceName}</span>
+                  <div key={s.serviceId} className="flex justify-between items-center p-3 rounded-lg" style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', border: '1px solid' }}>
+                    <span className="text-sm text-gray-300">{s.serviceName}</span>
                     <button
                       onClick={() => removeServiceFromBundle(s.serviceId)}
-                      className="text-red-600 hover:text-red-800 text-sm"
+                      className="text-red-500 hover:text-red-400 text-sm font-medium"
                     >
                       Hapus
                     </button>
@@ -489,16 +598,18 @@ const Bundle = () => {
         </div>
 
         {/* MODAL BUTTONS */}
-        <div className="flex gap-2 mt-6 border-t pt-4">
+        <div className="flex gap-2 mt-6 border-t pt-4" style={{ borderColor: '#333333' }}>
           <button
             onClick={handleCloseModal}
-            className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+            className="flex-1 px-4 py-2 rounded-lg font-medium transition-all"
+            style={{ backgroundColor: '#2A2A2A', color: '#F0F0F0', border: '1px solid #333333' }}
           >
             Batal
           </button>
           <button
             onClick={handleSaveBundle}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="flex-1 px-4 py-2 rounded-lg font-medium transition-all"
+            style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
           >
             Simpan
           </button>
@@ -511,17 +622,18 @@ const Bundle = () => {
         onClose={() => setDeleteOpen(false)}
         title="Konfirmasi Hapus"
       >
-        <p className="text-gray-600 mb-6">Apakah Anda yakin ingin menghapus bundle <strong>{deleteTarget?.name}</strong>?</p>
+        <p className="mb-6" style={{ color: '#D4D4D4' }}>Apakah Anda yakin ingin menghapus bundle <strong style={{ color: '#D4AF37' }}>{deleteTarget?.name}</strong>?</p>
         <div className="flex gap-2">
           <button
             onClick={() => setDeleteOpen(false)}
-            className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+            className="flex-1 px-4 py-2 rounded-lg font-medium transition-all"
+            style={{ backgroundColor: '#2A2A2A', color: '#F0F0F0', border: '1px solid #333333' }}
           >
             Batal
           </button>
           <button
             onClick={handleDeleteBundle}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="flex-1 px-4 py-2 rounded-lg font-medium transition-all bg-red-600 text-white hover:bg-red-700"
           >
             Hapus
           </button>

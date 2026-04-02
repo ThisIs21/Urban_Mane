@@ -32,8 +32,20 @@ func (c *ProductController) UploadFile(ctx *gin.Context) {
 		return
 	}
 
-	// Buat folder uploads jika belum ada
-	uploadDir := "uploads/products"
+	// Cari folder images dari working directory
+	workDir, err := os.Getwd()
+	if err != nil {
+		workDir = "."
+	}
+
+	// Path untuk disimpan - coba beberapa lokasi
+	uploadDir := filepath.Join(workDir, "../images/products")
+	if _, err := os.Stat(uploadDir); err != nil {
+		// Coba dari current directory
+		uploadDir = filepath.Join(workDir, "images/products")
+	}
+
+	// Buat folder jika belum ada
 	os.MkdirAll(uploadDir, 0755)
 
 	// Buat nama file unik menggunakan timestamp
@@ -52,7 +64,7 @@ func (c *ProductController) UploadFile(ctx *gin.Context) {
 
 	dst, err := os.Create(filepath)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan file"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan file: " + err.Error()})
 		return
 	}
 	defer dst.Close()
@@ -63,7 +75,7 @@ func (c *ProductController) UploadFile(ctx *gin.Context) {
 	}
 
 	// Return URL relative untuk disimpan ke database
-	fileURL := fmt.Sprintf("/uploads/products/%s", filename)
+	fileURL := fmt.Sprintf("/images/products/%s", filename)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"url":     fileURL,

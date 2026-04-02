@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"os"
+	"path/filepath"
+
 	"urban-mane/internal/controller"
 	"urban-mane/internal/middleware"
 
@@ -69,5 +72,10 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 	}
 
 	// Static files untuk uploaded images
-	r.Static("/uploads", "./uploads")
+	workDir, _ := os.Getwd()
+	uploadsPath := filepath.Join(workDir, "../uploads")
+	if _, err := os.Stat(uploadsPath); err != nil {
+		uploadsPath = filepath.Join(workDir, "uploads")
+	}
+	r.Static("/uploads", uploadsPath)
 }

@@ -15,6 +15,7 @@ type ServiceService interface {
 	CreateService(input model.ServiceInput) (*model.Service, error)
 	UpdateService(id string, input model.ServiceInput) (*model.Service, error)
 	DeleteService(id string) error
+	DeductServiceRequiredProducts(serviceId string) error
 }
 
 type serviceService struct{}
@@ -41,6 +42,7 @@ func (s *serviceService) CreateService(input model.ServiceInput) (*model.Service
 		Price:            input.Price,
 		Duration:         input.Duration,
 		Category:         input.Category,
+		Image:            input.Image,
 		RequiredProducts: input.RequiredProducts,
 		IsActive:         true, // Default aktif
 		CreatedAt:        time.Now(),
@@ -78,6 +80,9 @@ func (s *serviceService) UpdateService(id string, input model.ServiceInput) (*mo
 	if input.Category != "" {
 		existingService.Category = input.Category
 	}
+	if input.Image != "" {
+		existingService.Image = input.Image
+	}
 	if input.RequiredProducts != nil {
 		existingService.RequiredProducts = input.RequiredProducts
 	}
@@ -93,4 +98,25 @@ func (s *serviceService) UpdateService(id string, input model.ServiceInput) (*mo
 // DeleteService menghapus service
 func (s *serviceService) DeleteService(id string) error {
 	return repository.DeleteService(id)
+}
+
+// DeductServiceRequiredProducts deduct stok produk yang dibutuhkan service
+func (s *serviceService) DeductServiceRequiredProducts(serviceId string) error {
+	svc, err := repository.FindServiceByID(serviceId)
+	if err != nil {
+		return errors.New("service tidak ditemukan")
+	}
+
+	if len(svc.RequiredProducts) == 0 {
+		return nil
+	}
+
+	productService := NewProductService()
+	for _, reqProduct := range svc.RequiredProducts {
+		if err := productService.DeductProductStock(reqProduct.ProductID.Hex(), reqProduct.Quantity); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

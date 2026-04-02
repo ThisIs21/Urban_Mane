@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import AdminLayout from "./components/layout/AdminLayout/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Products from './pages/admin/Products';
+import Services from './pages/admin/Services';
 import Bundle from './pages/admin/Bundle';
 
 // Protected Route Component
@@ -45,6 +46,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="products" element={<Products />} />
+            <Route path="services" element={<Services />} />
             <Route path="bundles" element={<Bundle />} />
           </Route>
 

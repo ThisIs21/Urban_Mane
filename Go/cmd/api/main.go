@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"urban-mane/config"
 	"urban-mane/internal/controller"
@@ -52,6 +53,30 @@ func main() {
 
 	// Router
 	r := gin.Default()
+
+	// Tentukan path folder images - cari di parent directory
+	workDir, err := os.Getwd()
+	if err != nil {
+		log.Println("Error getting working directory:", err)
+		workDir = "."
+	}
+
+	// Cari folder images dari project root
+	imagesPath := filepath.Join(workDir, "../images")
+	if _, err := os.Stat(imagesPath); err != nil {
+		// Jika tidak ketemu, coba dari current dir
+		imagesPath = filepath.Join(workDir, "images")
+	}
+
+	// Pastikan folder images ada
+	if _, err := os.Stat(imagesPath); err == nil {
+		log.Println("Serving images from:", imagesPath)
+		r.Static("/images", imagesPath)
+	} else {
+		log.Println("Images folder not found at:", imagesPath)
+	}
+
+	
 
 	// CORS
 	r.Use(func(c *gin.Context) {
