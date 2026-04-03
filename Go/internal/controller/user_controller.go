@@ -29,7 +29,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
         input.Role = "cashier" // Default role jika kosong
     }
 
-    user, err := c.userService.CreateUser(input)
+    user, err := c.userService.Register(input)
     if err != nil {
         ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return

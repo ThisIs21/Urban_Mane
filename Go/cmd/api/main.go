@@ -27,12 +27,12 @@ func main() {
 	repository.InitProductCollection()
 	repository.InitServiceCollection()
 	repository.InitBundleCollection()
+	repository.InitTransactionCollection()
 
 	// === INIT LAYERS ===
 
 	// Auth
 	authService := service.NewAuthService()
-	authService.SeedUsers()
 	authController := controller.NewAuthController(authService)
 
 	// User
@@ -50,6 +50,10 @@ func main() {
 	// Bundle
 	bundleService := service.NewBundleService()
 	bundleController := controller.NewBundleController(bundleService)
+
+	// Transaction
+	transactionService := service.NewTransactionService(productService, bundleService, userService)
+	transactionController := controller.NewTransactionController(transactionService)
 
 	// Router
 	r := gin.Default()
@@ -76,8 +80,6 @@ func main() {
 		log.Println("Images folder not found at:", imagesPath)
 	}
 
-	
-
 	// CORS
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -91,7 +93,7 @@ func main() {
 	})
 
 	// Register Routes
-	routes.RegisterRoutes(r, authController, userController, productController, serviceController, bundleController)
+	routes.RegisterRoutes(r, authController, userController, productController, serviceController, bundleController, transactionController)
 
 	// Run
 	port := os.Getenv("PORT")

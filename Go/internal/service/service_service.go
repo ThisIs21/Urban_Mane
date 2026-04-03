@@ -26,7 +26,16 @@ func NewServiceService() ServiceService {
 
 // GetAllServices mengambil semua services dengan fitur search
 func (s *serviceService) GetAllServices(search string) ([]model.Service, error) {
-	return repository.GetAllServices(search)
+	services, err := repository.GetAllServices(search)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range services {
+		services[i].Image = normalizeImageURL(services[i].Image)
+	}
+
+	return services, nil
 }
 
 // CreateService membuat service baru
@@ -97,6 +106,11 @@ func (s *serviceService) UpdateService(id string, input model.ServiceInput) (*mo
 
 // DeleteService menghapus service
 func (s *serviceService) DeleteService(id string) error {
+	svc, err := repository.FindServiceByID(id)
+	if err != nil {
+		return err
+	}
+	deleteLocalImage(svc.Image)
 	return repository.DeleteService(id)
 }
 
@@ -120,3 +134,4 @@ func (s *serviceService) DeductServiceRequiredProducts(serviceId string) error {
 
 	return nil
 }
+

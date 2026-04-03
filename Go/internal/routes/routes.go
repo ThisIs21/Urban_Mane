@@ -11,7 +11,7 @@ import (
 )
 
 // RegisterRoutes attaches all route groups to the main engine
-func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController, bundleController *controller.BundleController) {
+func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController, bundleController *controller.BundleController, transactionController *controller.TransactionController) {
 
 	// Public
 	auth := r.Group("/api/v1/auth")
@@ -39,7 +39,7 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 
 		// Products Management (Admin Only)
 		products := api.Group("/products")
-		products.Use(middleware.RoleMiddleware("admin"))
+		products.Use(middleware.RoleMiddleware("admin", "cashier")) // Admin & Kasir bisa akses produk
 		{
 			products.GET("", productController.GetProducts)
 			products.POST("", productController.CreateProduct)
@@ -52,7 +52,7 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 
 		// Services Management (Admin Only)
 		services := api.Group("/services")
-		services.Use(middleware.RoleMiddleware("admin"))
+		services.Use(middleware.RoleMiddleware("admin", "cashier")) // Admin & Kasir bisa akses services
 		{
 			services.GET("", serviceController.GetServices)
 			services.POST("", serviceController.CreateService)
@@ -62,13 +62,25 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 
 		// Bundles Management (Admin Only)
 		bundles := api.Group("/bundles")
-		bundles.Use(middleware.RoleMiddleware("admin"))
+		bundles.Use(middleware.RoleMiddleware("admin", "cashier")) // Admin & Kasir bisa akses bundles
 		{
 			bundles.GET("", bundleController.GetBundles)
 			bundles.POST("", bundleController.CreateBundle)
 			bundles.PUT("/:id", bundleController.UpdateBundle)
 			bundles.DELETE("/:id", bundleController.DeleteBundle)
 		}
+
+		// Transactions Management (Cashier and Admin Only)
+		// Di dalam RegisterRoutes
+// ...
+    // Transactions (Admin & Cashier)
+    tx := api.Group("/transactions")
+    tx.Use(middleware.RoleMiddleware("admin", "cashier")) // Hanya Admin & Kasir
+    {
+        tx.POST("", transactionController.CreateTransaction)
+        tx.GET("", transactionController.GetTransactions)
+    }
+// ...
 	}
 
 	// Static files untuk uploaded images

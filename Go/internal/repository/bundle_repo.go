@@ -80,6 +80,16 @@ func GetBundleByID(id string) (*model.Bundle, error) {
 	return &bundle, nil
 }
 
+func FindBundleByName(name string) (*model.Bundle, error) {
+	filter := bson.M{"name": bson.M{"$regex": "^" + name + "$", "$options": "i"}}
+	var bundle model.Bundle
+	err := bundleCollection.FindOne(context.TODO(), filter).Decode(&bundle)
+	if err != nil {
+		return nil, err
+	}
+	return &bundle, nil
+}
+
 func UpdateBundle(id string, bundle model.Bundle) (*model.Bundle, error) {
 	objID, err := bson.ObjectIDFromHex(id)
 	if err != nil {
@@ -139,3 +149,49 @@ func UpdateBundleStock(id string, quantity int) error {
 
 	return err
 }
+
+// FindBundleByID is an alias for GetBundleByID to match transaction service naming
+func FindBundleByID(id string) (*model.Bundle, error) {
+	return GetBundleByID(id)
+}
+
+// DeductBundleStock reduces bundle inventory for transactions
+func DeductBundleStock(id string, quantity int) error {
+	if quantity <= 0 {
+		return errors.New("quantity must be greater than 0")
+	}
+
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("invalid bundle id")
+	}
+
+	_, err = bundleCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": objID},
+		bson.M{"$inc": bson.M{"stock": -quantity}},
+	)
+
+	return err
+}
+
+// RestoreBundleStock restores bundle inventory when transaction is cancelled
+func RestoreBundleStock(id string, quantity int) error {
+	if quantity <= 0 {
+		return errors.New("quantity must be greater than 0")
+	}
+
+	objID, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("invalid bundle id")
+	}
+
+	_, err = bundleCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": objID},
+		bson.M{"$inc": bson.M{"stock": quantity}},
+	)
+
+	return err
+}
+

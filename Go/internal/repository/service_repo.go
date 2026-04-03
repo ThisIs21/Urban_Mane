@@ -92,6 +92,20 @@ func FindServiceByID(id string) (*model.Service, error) {
 	return &service, nil
 }
 
+func FindServiceByName(name string) (*model.Service, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var service model.Service
+	filter := bson.M{"name": bson.M{"$regex": "^" + name + "$", "$options": "i"}}
+	err := serviceCollection.FindOne(ctx, filter).Decode(&service)
+	if err != nil {
+		return nil, err
+	}
+
+	return &service, nil
+}
+
 // UpdateService mengupdate service yang ada
 func UpdateService(id string, svc model.Service) (*model.Service, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -108,6 +122,7 @@ func UpdateService(id string, svc model.Service) (*model.Service, error) {
 			"price":            svc.Price,
 			"duration":         svc.Duration,
 			"category":         svc.Category,
+			"image":            svc.Image,
 			"requiredProducts": svc.RequiredProducts,
 			"isActive":         svc.IsActive,
 			"updatedAt":        time.Now(),

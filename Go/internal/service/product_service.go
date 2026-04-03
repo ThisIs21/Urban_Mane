@@ -8,18 +8,25 @@ import (
 )
 
 type ProductService interface {
-	CreateProduct(input model.ProductInput) (*model.Product, error)
-	GetAllProducts(search string) ([]model.Product, error)
-	UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
-	DeleteProduct(id string) error
-	DeductProductStock(productId string, quantity int) error
+	 CreateProduct(input model.ProductInput) (*model.Product, error)
+    GetAllProducts(search string) ([]model.Product, error)
+    GetProductByID(id string) (*model.Product, error) // <--- TAMBAHKAN INI
+    UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
+    DeleteProduct(id string) error
+    DeductProductStock(productId string, quantity int) error
 }
 
+
 type productService struct{}
+
+func (s *productService) GetProductByID(id string) (*model.Product, error) {
+    return repository.FindProductByID(id)
+}
 
 func NewProductService() ProductService {
 	return &productService{}
 }
+
 
 func (s *productService) CreateProduct(input model.ProductInput) (*model.Product, error) {
 	newProduct := model.Product{
@@ -40,7 +47,16 @@ func (s *productService) CreateProduct(input model.ProductInput) (*model.Product
 }
 
 func (s *productService) GetAllProducts(search string) ([]model.Product, error) {
-	return repository.GetAllProducts(search)
+	products, err := repository.GetAllProducts(search)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range products {
+		products[i].Image = normalizeImageURL(products[i].Image)
+	}
+
+	return products, nil
 }
 
 func (s *productService) UpdateProduct(id string, input model.ProductInput) (*model.Product, error) {
@@ -68,6 +84,11 @@ func (s *productService) UpdateProduct(id string, input model.ProductInput) (*mo
 }
 
 func (s *productService) DeleteProduct(id string) error {
+	product, err := repository.FindProductByID(id)
+	if err != nil {
+		return err
+	}
+	deleteLocalImage(product.Image)
 	return repository.DeleteProduct(id)
 }
 
@@ -87,3 +108,4 @@ func (s *productService) DeductProductStock(productId string, quantity int) erro
 
 	return repository.DeductProductStock(productId, quantity)
 }
+

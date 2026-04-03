@@ -22,7 +22,16 @@ func NewBundleService() BundleService {
 }
 
 func (s *bundleService) GetAllBundles(search string) ([]model.Bundle, error) {
-	return repository.GetAllBundles(search)
+	bundles, err := repository.GetAllBundles(search)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range bundles {
+		bundles[i].Image = normalizeImageURL(bundles[i].Image)
+	}
+
+	return bundles, nil
 }
 
 func (s *bundleService) GetBundleByID(id string) (*model.Bundle, error) {
@@ -30,10 +39,6 @@ func (s *bundleService) GetBundleByID(id string) (*model.Bundle, error) {
 }
 
 func (s *bundleService) CreateBundle(input model.BundleInput) (*model.Bundle, error) {
-	if len(input.Products) == 0 && len(input.Services) == 0 {
-		return nil, errors.New("bundle must contain at least one product or service")
-	}
-
 	if input.BundlePrice <= 0 {
 		return nil, errors.New("bundle price must be greater than 0")
 	}
@@ -94,5 +99,11 @@ func (s *bundleService) UpdateBundle(id string, input model.BundleInput) (*model
 }
 
 func (s *bundleService) DeleteBundle(id string) error {
+	bundle, err := repository.GetBundleByID(id)
+	if err != nil {
+		return err
+	}
+	deleteLocalImage(bundle.Image)
 	return repository.DeleteBundle(id)
 }
+
