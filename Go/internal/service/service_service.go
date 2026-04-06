@@ -134,4 +134,3 @@ func (s *serviceService) DeductServiceRequiredProducts(serviceId string) error {
 
 	return nil
 }
-

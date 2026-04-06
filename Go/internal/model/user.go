@@ -15,6 +15,7 @@ type User struct {
 	Phone     string        `json:"phone" bson:"phone"`
 	PhotoUrl  string        `json:"photoUrl" bson:"photoUrl"`
 	IsActive  bool          `json:"isActive" bson:"isActive"`
+	Status    string    	`bson:"status" json:"status"` 
 	CreatedAt time.Time     `json:"createdAt" bson:"createdAt"`
 	UpdatedAt time.Time     `json:"updatedAt" bson:"updatedAt"`
 }

@@ -109,3 +109,5 @@ func (s *productService) DeductProductStock(productId string, quantity int) erro
 	return repository.DeductProductStock(productId, quantity)
 }
 
+
+

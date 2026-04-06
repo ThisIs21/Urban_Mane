@@ -11,7 +11,17 @@ import (
 )
 
 // RegisterRoutes attaches all route groups to the main engine
-func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, userController *controller.UserController, productController *controller.ProductController, serviceController *controller.ServiceController, bundleController *controller.BundleController, transactionController *controller.TransactionController) {
+func RegisterRoutes(
+	r *gin.Engine,
+	 authController *controller.AuthController,
+	 userController *controller.UserController,
+	  productController *controller.ProductController,
+	   serviceController *controller.ServiceController,
+	    bundleController *controller.BundleController,
+		 transactionController *controller.TransactionController,
+		 orderController *controller.OrderController,
+		 dashboardController *controller.DashboardController,
+		) {
 
 	// Public
 	auth := r.Group("/api/v1/auth")
@@ -29,7 +39,7 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 
 		// User Management (Admin Only)
 		users := api.Group("/users")
-		users.Use(middleware.RoleMiddleware("admin"))
+		users.Use(middleware.RoleMiddleware("admin", "cashier")) // Admin & Kasir bisa akses user
 		{
 			users.GET("", userController.GetUsers)
 			users.POST("", userController.CreateUser)
@@ -70,18 +80,38 @@ func RegisterRoutes(r *gin.Engine, authController *controller.AuthController, us
 			bundles.DELETE("/:id", bundleController.DeleteBundle)
 		}
 
-		// Transactions Management (Cashier and Admin Only)
-		// Di dalam RegisterRoutes
-// ...
-    // Transactions (Admin & Cashier)
+		
     tx := api.Group("/transactions")
-    tx.Use(middleware.RoleMiddleware("admin", "cashier")) // Hanya Admin & Kasir
+    tx.Use(middleware.RoleMiddleware("admin", "cashier")) 
     {
         tx.POST("", transactionController.CreateTransaction)
         tx.GET("", transactionController.GetTransactions)
     }
-// ...
-	}
+
+	orders := api.Group("/orders")
+    orders.Use(middleware.RoleMiddleware("admin", "cashier"))
+    {
+        orders.POST("", orderController.CreateOrder)       // Buat order baru
+        orders.GET("/queue", orderController.GetQueue)     // Lihat antrian
+        orders.GET("/payment", orderController.GetWaitingPayment) // Lihat yg mau bayar
+        
+        // Aksi terhadap order spesifik
+        orders.PUT("/:id/start", orderController.StartOrder)
+        orders.PUT("/:id/finish", orderController.FinishOrder)
+        orders.PUT("/:id/pay", orderController.ProcessPayment)
+        orders.PUT("/:id/cancel", orderController.CancelOrder)
+		// Di dalam group orders
+		orders.GET("/history", orderController.GetHistory)
+    }
+
+	dash := api.Group("/dashboard")
+    dash.Use(middleware.RoleMiddleware("owner"))
+    {
+        dash.GET("/owner", dashboardController.GetOwnerDashboard)
+    }
+}
+
+	
 
 	// Static files untuk uploaded images
 	workDir, _ := os.Getwd()

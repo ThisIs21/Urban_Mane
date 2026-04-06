@@ -3,32 +3,41 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Import Layouts
 import AdminLayout from "./components/layout/AdminLayout/AdminLayout";
-import CashierLayout from "./components/layout/CashierLayout/CashierLayout"; // <--- PENTING: Import Layout Kasir
-// import MainLayout from "./components/layout/MainLayout"; // Opsional, kalau butuh layout generik
+import CashierLayout from "./components/layout/CashierLayout/CashierLayout"; 
+import OwnerLayout from "./components/layout/OwnerLayout/OwnerLayout";
 
 // Import Pages
 import Login from "./pages/Login";
-import OwnerDashboard from "./pages/owner/Dashboard";
-import BarberDashboard from "./pages/barber/Dashboard";
+
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
-import Users from './pages/admin/Users';
-import Products from './pages/admin/Products';
-import Services from './pages/admin/Services';
-import Bundle from './pages/admin/Bundle';
+import Users from "./pages/admin/Users";
+import Products from "./pages/admin/Products";
+import Services from "./pages/admin/Services";
+import Bundle from "./pages/admin/Bundle";
 
 // Cashier Pages
 import CashierDashboard from "./pages/kasir/Dashboard";
 import Transaction from "./pages/kasir/Transaction";
+import QueueBoard from "./pages/kasir/QueueBoard";
+import History from "./pages/kasir/History";
+
+//Owner Pages
+import OwnerDashboard from "./pages/owner/Dashboard";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div className="flex h-screen items-center justify-center text-white">Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex h-screen items-center justify-center text-white">
+        Loading...
+      </div>
+    );
   if (!user) return <Navigate to="/login" replace />;
-  
+
   // Cek Role
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Jika role tidak diizinkan, tendang ke dashboard sesuai role masing-masing
@@ -69,35 +78,29 @@ function App() {
             path="/cashier"
             element={
               <ProtectedRoute allowedRoles={["cashier"]}>
-                <CashierLayout /> {/* <--- INI MEMAKAI CASHIER LAYOUT (DENGAN SIDEBAR) */}
+                <CashierLayout />
               </ProtectedRoute>
             }
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<CashierDashboard />} />
             <Route path="transaction" element={<Transaction />} />
-            {/* Nanti tambahkan history di sini */}
+            <Route path="board" element={<QueueBoard />} />
+            <Route path="history" element={<History />} />
           </Route>
 
           {/* === OWNER ROUTES === */}
           <Route
-            path="/owner/dashboard"
+            path="/owner"
             element={
               <ProtectedRoute allowedRoles={["owner"]}>
-                <OwnerDashboard />
+                <OwnerLayout />
               </ProtectedRoute>
             }
-          />
-
-          {/* === BARBER ROUTES === */}
-          <Route
-            path="/barber/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["barber"]}>
-                <BarberDashboard />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route path="dashboard" element={<OwnerDashboard />} />
+            {/* Route lainnya */}
+          </Route>
 
           {/* === FALLBACK === */}
           <Route path="*" element={<Navigate to="/login" replace />} />

@@ -30,17 +30,24 @@ const uploadFile = async (file) => {
   return response.data.url;
 };
 
+const getOwnerDashboard = async () => {
+  const response = await api.get('/dashboard/owner');
+  return response.data;
+};
+
+
+// ========== PERBAIKAN GAMBAR ==========
 const getImageUrl = (imagePath) => {
-  if (!imagePath) return null;
+  if (!imagePath) return 'https://via.placeholder.com/150?text=No+Image';
   if (imagePath.startsWith('http')) return imagePath;
 
-  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  let cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
 
   if (cleanPath.startsWith('/images') || cleanPath.startsWith('/uploads')) {
-    return `${BACKEND_URL}${cleanPath}`;
+    return encodeURI(`${BACKEND_URL}${cleanPath}`);
   }
 
-  return `${BACKEND_URL}/images/products${cleanPath}`;
+  return encodeURI(`${BACKEND_URL}/images/products${cleanPath}`);
 };
 
 export default {
@@ -50,4 +57,5 @@ export default {
   deleteService,
   uploadFile,
   getImageUrl,
+  getOwnerDashboard,
 };

@@ -1,440 +1,186 @@
+// ============================================================
+// Services.jsx
+// ============================================================
 import { useState, useEffect } from 'react';
 import serviceService from '../../services/serviceService';
 import productService from '../../services/productService';
 import Modal from '../../components/shared/Modal';
+import { adminTableCss } from './adminTableStyles';
 
 const Services = () => {
-    // ========== SERVICES STATE ==========
-    const [services, setServices] = useState([]);
-    const [servicesLoading, setServicesLoading] = useState(false);
-    const [servicesSearch, setServicesSearch] = useState('');
-    const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
-    const [deleteServiceOpen, setDeleteServiceOpen] = useState(false);
-    const [editingService, setEditingService] = useState(null);
-    const [deleteServiceTarget, setDeleteServiceTarget] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState(null);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editingSvc, setEditingSvc] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
 
-    const [products, setProducts] = useState([]); // For tracking available products
+  const [form, setForm] = useState({ name:'', price:'', duration:'', category:'', image:'', requiredProducts:[], isActive:true });
+  const formatRp = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
-    const [serviceFormData, setServiceFormData] = useState({
-        name: '',
-        price: '',
-        duration: '',
-        category: '',
-        image: '',
-        requiredProducts: [],
-        isActive: true
-    });
+  const fetchServices = async () => {
+    try { setLoading(true); setServices((await serviceService.getAllServices(search)) || []); }
+    catch(err) { console.error(err); } finally { setLoading(false); }
+  };
 
-    // ========== FETCH PRODUCTS (FOR DROPDOWNS) ==========
-    useEffect(() => {
-        const fetchAvailableProducts = async () => {
-            try {
-                const data = await productService.getAllProducts('');
-                setProducts(data || []);
-            } catch (err) {
-                console.error('Failed to fetch products for service dependencies', err);
-            }
-        };
-        fetchAvailableProducts();
-    }, []);
+  useEffect(() => { fetchServices(); }, [search]);
+  useEffect(() => { productService.getAllProducts('').then(d=>setAllProducts(d||[])).catch(()=>{}); }, []);
 
-    // ========== SERVICES FUNCTIONS ==========
-    const fetchServices = async () => {
-        try {
-            setServicesLoading(true);
-            const data = await serviceService.getAllServices(servicesSearch);
-            setServices(data || []);
-        } catch (err) {
-            console.error(err);
-            alert('Gagal mengambil data services');
-        } finally {
-            setServicesLoading(false);
-        }
-    };
+  const openCreate = () => {
+    setEditingSvc(null);
+    setForm({ name:'', price:'', duration:'', category:'', image:'', requiredProducts:[], isActive:true });
+    setPhotoPreview(null); setIsModalOpen(true);
+  };
+  const openEdit = (s) => {
+    setEditingSvc(s);
+    setForm({ name:s.name, price:s.price, duration:s.duration, category:s.category||'', image:s.image||'', requiredProducts:s.requiredProducts||[], isActive:s.isActive });
+    setPhotoPreview(s.image||null); setIsModalOpen(true);
+  };
 
-    useEffect(() => {
-        fetchServices();
-    }, [servicesSearch]);
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    try { const url = await serviceService.uploadFile(file); setForm(p=>({...p,image:url})); setPhotoPreview(url); }
+    catch { alert('Gagal upload foto'); }
+  };
 
-    const handleOpenCreateService = () => {
-        setEditingService(null);
-        setServiceFormData({ name: '', price: '', duration: '', category: '', image: '', requiredProducts: [], isActive: true });
-        setPhotoPreview(null);
-        setIsServiceModalOpen(true);
-    };
+  const addProduct = () => setForm(p=>({...p, requiredProducts:[...p.requiredProducts,{productId:'',productName:'',quantity:1}]}));
+  const removeProduct = (i) => setForm(p=>({...p, requiredProducts:p.requiredProducts.filter((_,j)=>j!==i)}));
+  const updateProductRow = (i, field, value) => setForm(p=>{
+    const rp=[...p.requiredProducts]; rp[i]={...rp[i],[field]:value};
+    if(field==='productId'){ const prod=allProducts.find(x=>x.id===value); rp[i].productName=prod?.name||''; }
+    return {...p,requiredProducts:rp};
+  });
 
-    const handleOpenEditService = (service) => {
-        setEditingService(service);
-        setServiceFormData({
-            name: service.name,
-            price: service.price,
-            duration: service.duration,
-            category: service.category || '',
-            image: service.image || '',
-            requiredProducts: service.requiredProducts || [],
-            isActive: service.isActive
-        });
-        setPhotoPreview(service.image || null);
-        setIsServiceModalOpen(true);
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {...form, price:Number(form.price), duration:Number(form.duration)};
+      if(editingSvc) await serviceService.updateService(editingSvc.id, payload);
+      else await serviceService.createService(payload);
+      setIsModalOpen(false); fetchServices();
+    } catch(err) { alert(err.response?.data?.error||'Terjadi kesalahan'); }
+  };
 
-    const handleFileUpload = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+  const handleDelete = async () => {
+    try { await serviceService.deleteService(deleteTarget.id); setDeleteOpen(false); setDeleteTarget(null); fetchServices(); }
+    catch { alert('Gagal menghapus service'); }
+  };
 
-        try {
-            console.log('[DEBUG] Uploading file:', file.name);
-            const url = await serviceService.uploadFile(file);
-            console.log('[DEBUG] Upload returned URL:', url);
-            setServiceFormData(prev => ({ ...prev, image: url }));
-            setPhotoPreview(url);
-        } catch (err) {
-            console.error('[DEBUG] Upload error:', err);
-            alert('Gagal upload foto');
-        }
-    };
+  const set = (k,v) => setForm(p=>({...p,[k]:v}));
 
-    const handleAddProductToService = () => {
-        setServiceFormData({
-            ...serviceFormData,
-            requiredProducts: [...serviceFormData.requiredProducts, { productId: '', productName: '', quantity: 1 }]
-        });
-    };
-
-    const handleRemoveProductFromService = (index) => {
-        setServiceFormData({
-            ...serviceFormData,
-            requiredProducts: serviceFormData.requiredProducts.filter((_, i) => i !== index)
-        });
-    };
-
-    const handleSubmitService = async (e) => {
-        e.preventDefault();
-        try {
-            const payload = {
-                ...serviceFormData,
-                price: Number(serviceFormData.price),
-                duration: Number(serviceFormData.duration),
-                isActive: serviceFormData.isActive
-            };
-            console.log('[DEBUG] Service payload being sent:', JSON.stringify(payload));
-            console.log('[DEBUG] Image in payload:', payload.image);
-
-            if (editingService) {
-                await serviceService.updateService(editingService.id, payload);
-                alert("Service berhasil diupdate!");
-            } else {
-                await serviceService.createService(payload);
-                alert("Service berhasil dibuat!");
-            }
-            setIsServiceModalOpen(false);
-            fetchServices();
-        } catch (err) {
-            alert(err.response?.data?.error || "Terjadi kesalahan");
-        }
-    };
-
-    const handleDeleteService = async () => {
-        if (!deleteServiceTarget) return;
-        try {
-            await serviceService.deleteService(deleteServiceTarget.id);
-            alert("Service berhasil dihapus");
-            setDeleteServiceOpen(false);
-            setDeleteServiceTarget(null);
-            fetchServices();
-        } catch (err) {
-            alert("Gagal menghapus service");
-        }
-    };
-
-    // ========== HELPER ==========
-    const formatRupiah = (number) => {
-        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
-    };
-
-    // ========== RENDER ==========
-    return (
-        <div className="space-y-6">
-            {/* HEADER */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Services</h1>
-                    <p className="text-gray-400 mt-1">Manage salon services</p>
-                </div>
-            </div>
-
-            {/* Header Actions */}
-            <div className="flex justify-between items-center mb-6">
-                <input
-                    type="text"
-                    placeholder="Search services..."
-                    value={servicesSearch}
-                    onChange={(e) => setServicesSearch(e.target.value)}
-                    className="flex-1 min-w-[200px] px-4 py-2 rounded-lg border transition-all"
-                    style={{
-                        backgroundColor: '#1A1A1A',
-                        borderColor: '#333333',
-                        color: '#F0F0F0'
-                    }}
-                />
-                <button
-                    onClick={handleOpenCreateService}
-                    className="px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all duration-200 hover:shadow-lg ml-4"
-                    style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
-                >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-                    Add Service
-                </button>
-            </div>
-
-            {/* Services Table */}
-            {servicesLoading ? (
-                <p className="text-center text-gray-400 py-8">Loading...</p>
-            ) : services.length > 0 ? (
-                <div className="rounded-xl overflow-hidden shadow-2xl border" style={{ borderColor: '#333333' }}>
-                    <div className="overflow-x-auto" style={{ backgroundColor: '#1A1A1A' }}>
-                        <table className="w-full">
-                            <thead style={{ backgroundColor: '#0F0F0F' }}>
-                                <tr className="border-b" style={{ borderColor: '#333333' }}>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Image</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Service Name</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Category</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Price</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Duration</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Products</th>
-                                    <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#D4AF37' }}>Status</th>
-                                    <th className="px-6 py-4 text-center text-sm font-semibold" style={{ color: '#D4AF37' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {services.map((service) => (
-                                    <tr key={service.id} className="border-b hover:opacity-75 transition-all" style={{ borderColor: '#333333' }}>
-                                        <td className="px-6 py-4">
-                                            {service.image ? (
-                                                <img src={serviceService.getImageUrl(service.image)} alt={service.name} className="w-10 h-10 rounded object-cover" />
-                                            ) : (
-                                                <div className="w-10 h-10 rounded flex items-center justify-center text-xs font-semibold" style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}>
-                                                    -
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-200 font-medium">{service.name}</td>
-                                        <td className="px-6 py-4 text-gray-300 text-sm">{service.category}</td>
-                                        <td className="px-6 py-4 text-white font-semibold">{formatRupiah(service.price)}</td>
-                                        <td className="px-6 py-4 text-gray-300 text-sm">{service.duration} min</td>
-                                        <td className="px-6 py-4 text-gray-300 text-sm">{service.requiredProducts?.length || 0} items</td>
-                                        <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${service.isActive ? 'bg-green-900 text-green-200' : 'bg-gray-700 text-gray-300'}`}>
-                                                {service.isActive ? 'Active' : 'Inactive'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <button
-                                                onClick={() => handleOpenEditService(service)}
-                                                className="px-3 py-1 rounded text-sm font-medium transition-all mr-2"
-                                                style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => { setDeleteServiceTarget(service); setDeleteServiceOpen(true); }}
-                                                className="px-3 py-1 rounded text-sm font-medium transition-all bg-red-600 text-white hover:bg-red-700"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            ) : (
-                <p className="text-center text-gray-400 py-8">No services found</p>
-            )}
-
-            {/* Service Modal */}
-            <Modal
-                isOpen={isServiceModalOpen}
-                onClose={() => setIsServiceModalOpen(false)}
-                title={editingService ? 'Edit Service' : 'Add New Service'}
-            >
-                <form onSubmit={handleSubmitService} className="space-y-4 max-h-96 overflow-y-auto">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Service Name</label>
-                        <input
-                            type="text"
-                            value={serviceFormData.name}
-                            onChange={(e) => setServiceFormData({ ...serviceFormData, name: e.target.value })}
-                            required
-                            className="w-full px-3 py-2 rounded-lg border"
-                            style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">Price</label>
-                            <input
-                                type="number"
-                                value={serviceFormData.price}
-                                onChange={(e) => setServiceFormData({ ...serviceFormData, price: e.target.value })}
-                                required
-                                className="w-full px-3 py-2 rounded-lg border"
-                                style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1">Duration (min)</label>
-                            <input
-                                type="number"
-                                value={serviceFormData.duration}
-                                onChange={(e) => setServiceFormData({ ...serviceFormData, duration: e.target.value })}
-                                required
-                                className="w-full px-3 py-2 rounded-lg border"
-                                style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
-                        <select
-                            value={serviceFormData.category}
-                            onChange={(e) => setServiceFormData({ ...serviceFormData, category: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg border"
-                            style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                        >
-                            <option value="">Select Category</option>
-                            <option value="Haircut">Haircut</option>
-                            <option value="Coloring">Coloring</option>
-                            <option value="Beard">Beard</option>
-                            <option value="Styling">Styling</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Service Image</label>
-                        {photoPreview && <img src={serviceService.getImageUrl(photoPreview)} alt="Preview" className="w-20 h-20 rounded-lg mb-2 object-cover" />}
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileUpload}
-                            className="w-full text-gray-300"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Required Products</label>
-                        <div className="space-y-2">
-                            {serviceFormData.requiredProducts.map((product, idx) => (
-                                <div key={idx} className="flex gap-2">
-                                    <select
-                                        value={product.productId}
-                                        onChange={(e) => {
-                                            const selectedProduct = products.find(p => p.id === e.target.value);
-                                            const updatedProducts = [...serviceFormData.requiredProducts];
-                                            updatedProducts[idx].productId = e.target.value;
-                                            updatedProducts[idx].productName = selectedProduct?.name || '';
-                                            setServiceFormData({ ...serviceFormData, requiredProducts: updatedProducts });
-                                        }}
-                                        className="flex-1 px-3 py-2 rounded-lg border text-sm"
-                                        style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                                    >
-                                        <option value="">Select Product</option>
-                                        {products.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={product.quantity}
-                                        onChange={(e) => {
-                                            const updatedProducts = [...serviceFormData.requiredProducts];
-                                            updatedProducts[idx].quantity = Number(e.target.value);
-                                            setServiceFormData({ ...serviceFormData, requiredProducts: updatedProducts });
-                                        }}
-                                        placeholder="Qty"
-                                        className="w-16 px-3 py-2 rounded-lg border text-sm"
-                                        style={{ backgroundColor: '#1A1A1A', borderColor: '#333333', color: '#F0F0F0' }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveProductFromService(idx)}
-                                        className="px-3 py-2 rounded-lg text-red-400 hover:bg-red-600/20 transition-all"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleAddProductToService}
-                            className="mt-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all"
-                            style={{ backgroundColor: '#333333', color: '#D4AF37' }}
-                        >
-                            + Add Product
-                        </button>
-                    </div>
-
-                    <label className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={serviceFormData.isActive}
-                            onChange={(e) => setServiceFormData({ ...serviceFormData, isActive: e.target.checked })}
-                            className="rounded"
-                        />
-                        <span className="text-sm font-medium text-gray-300">Active</span>
-                    </label>
-
-                    <div className="flex gap-2 pt-4 border-t" style={{ borderColor: '#333333' }}>
-                        <button
-                            type="button"
-                            onClick={() => setIsServiceModalOpen(false)}
-                            className="flex-1 px-4 py-2 rounded-lg border transition-all"
-                            style={{ borderColor: '#333333', color: '#F0F0F0' }}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all"
-                            style={{ backgroundColor: '#D4AF37', color: '#0F0F0F' }}
-                        >
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </Modal>
-
-            {/* Delete Confirmation */}
-            <Modal
-                isOpen={deleteServiceOpen}
-                onClose={() => setDeleteServiceOpen(false)}
-                title="Confirm Delete"
-            >
-                <p className="text-gray-300 mb-6">Are you sure you want to delete service <strong>{deleteServiceTarget?.name}</strong>?</p>
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => setDeleteServiceOpen(false)}
-                        className="flex-1 px-4 py-2 rounded-lg border transition-all"
-                        style={{ borderColor: '#333333', color: '#F0F0F0' }}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleDeleteService}
-                        className="flex-1 px-4 py-2 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700 transition-all"
-                    >
-                        Delete
-                    </button>
-                </div>
-            </Modal>
+  return (
+    <>
+      <style>{adminTableCss}</style>
+      <div className="adm-page">
+        <div className="adm-pg-header adm-a1">
+          <div>
+            <p className="adm-pg-eyebrow">Manajemen</p>
+            <h1 className="adm-pg-title">Layanan</h1>
+            <p className="adm-pg-sub">Kelola service dan durasi</p>
+          </div>
+          <button className="adm-add-btn" onClick={openCreate}>
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/></svg>
+            Tambah Layanan
+          </button>
         </div>
-    );
+
+        <div className="adm-filter-bar adm-a2">
+          <input className="adm-search" type="text" placeholder="Cari layanan..." value={search} onChange={e=>setSearch(e.target.value)} />
+        </div>
+
+        <div className="adm-table-panel adm-a3">
+          <div className="adm-table-head">
+            <span className="adm-table-head-title">Daftar Layanan</span>
+            {!loading && <span className="adm-count">{services.length} layanan</span>}
+          </div>
+          <div style={{overflowX:'auto'}}>
+            <table className="adm-table">
+              <thead>
+                <tr><th>Foto</th><th>Nama</th><th>Kategori</th><th>Harga</th><th>Durasi</th><th>Produk</th><th>Status</th><th className="center">Aksi</th></tr>
+              </thead>
+              <tbody>
+                {loading ? Array.from({length:3}).map((_,i)=>(<tr key={i}>{[40,120,80,90,60,60,60,80].map((w,j)=><td key={j}><span className="skel" style={{width:w,height:13}}/></td>)}</tr>))
+                : services.length===0 ? <tr><td colSpan="8"><div className="adm-empty">Tidak ada layanan ditemukan.</div></td></tr>
+                : services.map(s=>(
+                  <tr key={s.id}>
+                    <td><div className="adm-thumb">{s.image?<img src={serviceService.getImageUrl(s.image)} alt={s.name} onError={e=>{e.target.style.display='none';}}/>:s.name.charAt(0).toUpperCase()}</div></td>
+                    <td className="adm-td-name">{s.name}</td>
+                    <td>{s.category||'—'}</td>
+                    <td className="adm-td-gold">{formatRp(s.price)}</td>
+                    <td>{s.duration} menit</td>
+                    <td>{s.requiredProducts?.length||0} item</td>
+                    <td><span className={`adm-badge ${s.isActive?'active':'inactive'}`}>{s.isActive?'Aktif':'Nonaktif'}</span></td>
+                    <td className="adm-td-center">
+                      <div className="adm-action-cell">
+                        <button className="adm-btn-edit" onClick={()=>openEdit(s)}>Edit</button>
+                        <button className="adm-btn-delete" onClick={()=>{setDeleteTarget(s);setDeleteOpen(true);}}>Hapus</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <Modal isOpen={isModalOpen} onClose={()=>setIsModalOpen(false)} title={editingSvc?'Edit Layanan':'Tambah Layanan Baru'}>
+          <form onSubmit={handleSubmit}>
+            <div className="adm-modal-body">
+              <div className="adm-field"><label className="adm-field-label">Nama Layanan</label><input className="adm-field-input" required value={form.name} onChange={e=>set('name',e.target.value)} placeholder="Nama layanan..."/></div>
+              <div className="adm-field-row">
+                <div className="adm-field"><label className="adm-field-label">Harga (Rp)</label><input className="adm-field-input" type="number" required value={form.price} onChange={e=>set('price',e.target.value)} placeholder="0"/></div>
+                <div className="adm-field"><label className="adm-field-label">Durasi (menit)</label><input className="adm-field-input" type="number" required value={form.duration} onChange={e=>set('duration',e.target.value)} placeholder="30"/></div>
+              </div>
+              <div className="adm-field">
+                <label className="adm-field-label">Kategori</label>
+                <select className="adm-field-input" value={form.category} onChange={e=>set('category',e.target.value)}>
+                  <option value="">Pilih kategori</option>
+                  {['Haircut','Coloring','Beard','Styling'].map(c=><option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="adm-field">
+                <label className="adm-field-label">Foto Layanan</label>
+                {photoPreview && <img className="adm-preview" src={serviceService.getImageUrl(photoPreview)} alt="preview" onError={e=>{e.target.style.display='none';}}/>}
+                <input className="adm-field-input" type="file" accept="image/*" onChange={handleFile} style={{paddingTop:6}}/>
+              </div>
+              <div className="adm-hr"/>
+              <p className="adm-section-title">Produk yang Dibutuhkan</p>
+              {form.requiredProducts.map((rp,i)=>(
+                <div key={i} style={{display:'flex',gap:8,alignItems:'center'}}>
+                  <select className="adm-field-input" style={{flex:1}} value={rp.productId} onChange={e=>updateProductRow(i,'productId',e.target.value)}>
+                    <option value="">Pilih produk</option>
+                    {allProducts.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                  <input className="adm-field-input" type="number" min="1" value={rp.quantity} onChange={e=>updateProductRow(i,'quantity',Number(e.target.value))} style={{width:64}} placeholder="Qty"/>
+                  <button type="button" className="adm-item-remove" onClick={()=>removeProduct(i)}>Hapus</button>
+                </div>
+              ))}
+              <button type="button" className="adm-inline-add-btn" onClick={addProduct}>+ Tambah Produk</button>
+              <label className="adm-toggle-row" htmlFor="svc-active">
+                <input id="svc-active" type="checkbox" checked={form.isActive} onChange={e=>set('isActive',e.target.checked)}/>
+                <span className="adm-toggle-label">Layanan aktif</span>
+              </label>
+            </div>
+            <div className="adm-modal-footer">
+              <button type="button" className="adm-modal-cancel" onClick={()=>setIsModalOpen(false)}>Batal</button>
+              <button type="submit" className="adm-modal-save">Simpan</button>
+            </div>
+          </form>
+        </Modal>
+
+        <Modal isOpen={deleteOpen} onClose={()=>setDeleteOpen(false)} title="Hapus Layanan">
+          <p className="adm-delete-msg">Hapus layanan <span className="adm-delete-name">"{deleteTarget?.name}"</span>?</p>
+          <div className="adm-modal-footer">
+            <button className="adm-modal-cancel" onClick={()=>setDeleteOpen(false)}>Batal</button>
+            <button className="adm-modal-delete-confirm" onClick={handleDelete}>Hapus</button>
+          </div>
+        </Modal>
+      </div>
+    </>
+  );
 };
 
 export default Services;

@@ -159,3 +159,22 @@ func RestoreProductStock(id string, quantity int) error {
 
 	return err
 }
+
+func AddProductStock(productID bson.ObjectID, quantity int) error {
+    filter := bson.M{"_id": productID}
+    update := bson.M{"$inc": bson.M{"stock": quantity}} // Tambah stok
+    _, err := productCollection.UpdateOne(context.TODO(), filter, update)
+    return err
+}
+
+func GetLowStockProducts(threshold int) ([]model.Product, error) {
+    filter := bson.M{"stock": bson.M{"$lt": threshold}}
+    opts := options.Find().SetSort(bson.D{{Key: "stock", Value: 1}}) // Urutkan paling sedikit
+    
+    cursor, err := productCollection.Find(context.TODO(), filter, opts)
+    if err != nil { return nil, err }
+    
+    var products []model.Product
+    cursor.All(context.TODO(), &products)
+    return products, nil
+}

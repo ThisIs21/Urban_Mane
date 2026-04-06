@@ -31,11 +31,7 @@ const deleteUser = async (id) => {
 };
 
 // ========== IMAGE URL HELPER FUNCTION ==========
-// IMPORTANT: Converts relative image paths to full backend URLs
-// Database stores: "/images/products/photo.jpg"
-// This helper converts to: "http://localhost:8080/images/products/photo.jpg"
-// RULE: Backend returns full path starting with "/" (like /images/products/...)
-// Just add BACKEND_URL prefix, don't add anything else!
+
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
   if (imagePath.startsWith('http')) return imagePath;
