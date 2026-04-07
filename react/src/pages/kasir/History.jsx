@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import orderService from '../../services/orderService';
+import transactionService from '../../services/transactionService';
 
 /* ─── Styles ──────────────────────────────────────────────────────────────── */
 const css = `
@@ -222,7 +223,9 @@ const css = `
   }
 
   .td-customer { color: var(--t1); font-weight: 500; }
+  .td-kasir    { color: var(--t2); }
   .td-barber   { color: var(--t2); }
+  .td-type     { color: var(--gold); font-weight: 500; font-size: 12px; }
 
   .td-items { color: var(--t3); font-size: 12px; }
   .items-toggle {
@@ -361,8 +364,52 @@ const History = () => {
   const fetchHistory = async (sd, ed) => {
     try {
       setLoading(true);
-      const data = await orderService.getHistory(sd, ed);
-      setOrders(data || []);
+      // Fetch both orders and transactions
+      const [ordersData, transactionsData] = await Promise.all([
+        orderService.getHistory(sd, ed),
+        transactionService.getHistory(''),
+      ]);
+      
+      // Normalize transactions ke format yang sama dengan orders
+      const normalizedTransactions = (transactionsData || []).map(t => {
+        // Tentukan tipe transaksi berdasarkan items
+        let transactionType = 'Penjualan Produk';
+        if (t.items && t.items.length > 0) {
+          const hasBundle = t.items.some(item => item.type === 'bundle');
+          const hasProduct = t.items.some(item => item.type === 'product');
+          if (hasBundle && !hasProduct) transactionType = 'Penjualan Paket';
+          else if (hasBundle && hasProduct) transactionType = 'Penjualan Produk & Paket';
+        }
+        return {
+          id: t._id || t.id,
+          invoiceNumber: t._id || t.id,
+          customerName: t.customerName || 'Walk-in',
+          cashierName: t.cashierName || '-',
+          barberName: null,
+          items: t.items || [],
+          grandTotal: t.grandTotal || 0,
+          createdAt: t.createdAt,
+          type: 'transaction',
+          typeLabel: transactionType,
+          status: 'completed',
+        };
+      });
+      
+      // Normalize orders ke format yang sama
+      const normalizedOrders = (ordersData || []).map(o => ({
+        ...o,
+        type: 'order',
+        typeLabel: 'Service',
+        status: 'completed',
+        cashierName: null,
+      }));
+      
+      // Gabung dan sort berdasarkan tanggal
+      const combined = [...normalizedTransactions, ...normalizedOrders].sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      
+      setOrders(combined);
       setPage(1);
     } catch (err) {
       console.error(err);
@@ -421,7 +468,7 @@ const History = () => {
           <div>
             <p className="hist-eyebrow">Laporan</p>
             <h1 className="hist-title">Riwayat Transaksi</h1>
-            <p className="hist-subtitle">Daftar semua order yang telah selesai</p>
+            <p className="hist-subtitle">Daftar semua transaksi penjualan dan service yang telah selesai</p>
           </div>
           {!loading && orders.length > 0 && (
             <div className="summary-chips">
@@ -466,8 +513,10 @@ const History = () => {
               <thead>
                 <tr>
                   <th>Waktu</th>
+                  <th>Tipe</th>
                   <th>Invoice</th>
                   <th>Customer</th>
+                  <th>Kasir</th>
                   <th>Barber</th>
                   <th>Item</th>
                   <th className="right">Total</th>
@@ -478,25 +527,28 @@ const History = () => {
                 {loading ? (
                   Array.from({ length: 6 }).map((_, i) => (
                     <tr key={i}>
-                      {[60, 90, 80, 70, 50, 70, 55].map((w, j) => (
+                      {[60, 60, 90, 80, 50, 50, 50, 70, 55].map((w, j) => (
                         <td key={j}><span className="skel" style={{ width: w }} /></td>
                       ))}
                     </tr>
                   ))
                 ) : paginated.length === 0 ? (
-                  <tr><td colSpan="7"><div className="empty-msg">Tidak ada transaksi pada periode ini.</div></td></tr>
+                  <tr><td colSpan="9"><div className="empty-msg">Tidak ada transaksi pada periode ini.</div></td></tr>
                 ) : (
                   paginated.map(order => {
                     const { date, time } = formatDate(order.createdAt);
+                    const isTransaction = order.type === 'transaction';
                     return (
                       <tr key={order.id}>
                         <td className="td-time">
                           <strong>{date}</strong>
                           {time}
                         </td>
+                        <td className="td-type">{order.typeLabel}</td>
                         <td className="td-invoice">{order.invoiceNumber}</td>
                         <td className="td-customer">{order.customerName || 'Walk-in'}</td>
-                        <td className="td-barber">{order.barberName || '—'}</td>
+                        <td className="td-kasir">{isTransaction ? (order.cashierName || '-') : '—'}</td>
+                        <td className="td-barber">{!isTransaction ? (order.barberName || '—') : '—'}</td>
                         <td className="td-items">
                           {order.items.length} item
                           <br />

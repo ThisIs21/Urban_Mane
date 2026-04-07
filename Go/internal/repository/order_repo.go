@@ -152,3 +152,81 @@ func GetTopBarbers(limit int) ([]bson.M, error) {
     cursor.All(context.TODO(), &results)
     return results, nil
 }
+
+func GetRevenueByDateRange(start, end time.Time) (int, error) {
+    match := bson.M{
+        "status":      model.OrderStatusCompleted,
+        "created_at": bson.M{"$gte": start, "$lte": end},
+    }
+    group := bson.M{"_id": nil, "total": bson.M{"$sum": "$grand_total"}}
+
+    cursor, err := orderCollection.Aggregate(context.TODO(), []bson.M{{"$match": match}, {"$group": group}})
+    if err != nil { return 0, err }
+
+    var result []struct {
+        Total int `bson:"total"`
+    }
+    if err = cursor.All(context.TODO(), &result); err != nil { return 0, err }
+    if len(result) == 0 { return 0, nil }
+    return result[0].Total, nil
+}
+
+func CountCompletedOrders() (int64, error) {
+    return orderCollection.CountDocuments(context.TODO(), bson.M{"status": model.OrderStatusCompleted})
+}
+
+func GetRecentOrders(limit int) ([]model.Order, error) {
+    opts := options.Find().
+        SetSort(bson.D{{Key: "created_at", Value: -1}}).
+        SetLimit(int64(limit))
+    
+    cursor, err := orderCollection.Find(context.TODO(), bson.M{"status": model.OrderStatusCompleted}, opts)
+    if err != nil { return nil, err }
+    var orders []model.Order
+    cursor.All(context.TODO(), &orders)
+    return orders, nil
+}
+
+// Weekly Revenue: Array of { date: "2023-10-27", total: 50000 }
+func GetWeeklyRevenue() ([]bson.M, error) {
+    // Logic: Group by date string (YYYY-MM-DD) for last 7 days
+    // Simplifikasi: Group by "%Y-%m-%d"
+    pipeline := []bson.M{
+        {"$match": bson.M{"status": model.OrderStatusCompleted}},
+        {"$project": bson.M{
+            "date": bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$created_at"}},
+            "grand_total": 1,
+        }},
+        {"$group": bson.M{
+            "_id":   "$date",
+            "total": bson.M{"$sum": "$grand_total"},
+        }},
+        {"$sort": bson.M{"_id": 1}}, // Ascending for chart
+        {"$limit": 7},
+    }
+    
+    cursor, err := orderCollection.Aggregate(context.TODO(), pipeline)
+    if err != nil { return nil, err }
+    
+    var results []bson.M
+    cursor.All(context.TODO(), &results)
+    return results, nil
+}
+
+// Sales Distribution: Group by Item Type (product vs service)
+func GetSalesDistribution() ([]bson.M, error) {
+    pipeline := []bson.M{
+        {"$unwind": "$items"},
+        {"$group": bson.M{
+            "_id":   "$items.type",
+            "total": bson.M{"$sum": "$items.sub_total"},
+        }},
+    }
+    
+    cursor, err := orderCollection.Aggregate(context.TODO(), pipeline)
+    if err != nil { return nil, err }
+    
+    var results []bson.M
+    cursor.All(context.TODO(), &results)
+    return results, nil
+}

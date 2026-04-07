@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import orderService from '../../services/orderService';
 import userService from '../../services/userService';
 import Modal from '../../components/shared/Modal';
+import useReceipt from '../../hooks/useReceipt';
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────── */
 const css = `
@@ -379,6 +380,9 @@ const QueueBoard = () => {
   const [discountPercent, setDiscountPercent] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
 
+  // Receipt utilities
+  const { receiptRef, exportToPDF } = useReceipt();
+
   const parseRupiah = (str) => parseInt(String(str).replace(/\D/g, ''), 10) || 0;
   const formatRupiahInput = (num) => (num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
@@ -428,6 +432,8 @@ const QueueBoard = () => {
     setPayModal(true);
   };
 
+
+
   const handlePayment = async () => {
     if (!selectedOrder) return;
     const discAmt = Math.round(selectedOrder.grandTotal * (discountPercent / 100));
@@ -437,10 +443,72 @@ const QueueBoard = () => {
       await orderService.processPayment(selectedOrder.id, {
         payAmount: Number(payAmount), paymentMethod: "cash", discount: discAmt,
       });
-      alert("Pembayaran berhasil!");
+      
+      // Siapkan HTML receipt untuk PDF
+      const barberName = selectedOrder.barberName || barbers.find(b => b._id === selectedOrder.barberId)?.name || 'Barber';
+      const cashierName = localStorage.getItem('userName') || 'Kasir';
+      const receiptHTML = `<div style="width: 80mm; margin: 0 auto; padding: 15px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.5;">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <div style="font-size: 32px; margin-bottom: 4px;">✂️</div>
+          <h1 style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold; margin: 4px 0; letter-spacing: 1px;">URBAN MANE</h1>
+          <p style="font-size: 10px; color: #666; margin: 2px 0 0 0;">Barbershop Professional</p>
+          <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        </div>
+        <div style="margin: 8px 0; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Invoice:</span><span>${selectedOrder.id}</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Tanggal:</span><span>${new Date().toLocaleString('id-ID')}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Customer:</span><span>${selectedOrder.customerName || 'Walk-in'}</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Barber:</span><span>${barberName}</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Kasir:</span><span>${cashierName}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0;">
+          <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin-bottom: 4px; font-weight: bold; font-size: 11px; border-bottom: 1px solid #ccc; padding-bottom: 4px;">
+            <span style="text-align: left;">Jenis</span><span style="text-align: center;">Qty</span><span style="text-align: right;">Harga</span>
+          </div>
+          ${selectedOrder.items.map(item => `<div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin: 3px 0; font-size: 12px;"><span>${item.name || item.itemName || 'Item'} (${item.type || 'Layanan'})</span><span style="text-align: center;">x${item.quantity}</span><span style="text-align: right; font-weight: bold;">Rp ${(item.quantity * (item.price || item.unitPrice || 0)).toLocaleString('id-ID')}</span></div>`).join('')}
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="text-align: right; margin: 8px 0;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 12px;"><span>Subtotal:</span><span>Rp ${(selectedOrder.grandTotal + discAmt).toLocaleString('id-ID')}</span></div>
+          ${discAmt > 0 ? `<div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 12px; color: #E05252;"><span>Diskon:</span><span>-Rp ${discAmt.toLocaleString('id-ID')}</span></div>` : ''}
+          <div style="border-top: 1px solid #ccc; margin: 6px 0;"></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 14px; font-weight: bold;"><span>TOTAL:</span><span>Rp ${gt.toLocaleString('id-ID')}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0; text-align: left; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Metode:</span><span>Cash</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Dibayar:</span><span>Rp ${Number(payAmount).toLocaleString('id-ID')}</span></div>
+          ${(Number(payAmount) - gt) > 0 ? `<div style="display: flex; justify-content: space-between; margin: 4px 0; color: #4CAF7D; font-weight: bold;"><span>Kembalian:</span><span>Rp ${(Number(payAmount) - gt).toLocaleString('id-ID')}</span></div>` : ''}
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="text-align: center; margin-top: 12px; font-size: 11px; color: #666;">
+          <p style="margin: 3px 0;">Terima kasih atas kunjungan Anda!</p>
+          <p style="margin: 3px 0;">Semoga puas dengan layanan kami</p>
+        </div>
+      </div>`;
+      
+      receiptRef.current.innerHTML = receiptHTML;
+      
+      // Auto-download PDF
+      setTimeout(() => {
+        exportToPDF(`struk-service-${Date.now()}.pdf`);
+      }, 200);
+      
       setPayModal(false);
       setSelectedOrder(null);
-      fetchData();
+      setPayAmount(0);
+      setDiscountPercent(0);
+      
+      alert("Pembayaran berhasil! PDF sedang di-download...");
+      
+      // Auto-reload halaman setelah 3 detik
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (err) {
       alert(err.response?.data?.error || "Gagal bayar");
     }
@@ -645,6 +713,9 @@ const QueueBoard = () => {
             </div>
           )}
         </Modal>
+
+        {/* ── Hidden receipt ref for PDF generation ── */}
+        <div ref={receiptRef} style={{ display: 'none' }}></div>
       </div>
     </>
   );

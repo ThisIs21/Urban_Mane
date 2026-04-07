@@ -64,6 +64,9 @@ func (s *userService) Register(input model.RegisterInput) (*model.User, error) {
 		return nil, err
 	}
 
+	// Log activity
+	LogActivity("CREATE", "User", createdUser.ID.Hex(), "Membuat user baru: "+createdUser.Name+" ("+createdUser.Role+")", "", "", "")
+
 	return createdUser, nil
 }
 
@@ -179,15 +182,29 @@ func (s *userService) UpdateUser(userID string, input model.UpdateUserInput) (*m
 		return nil, errors.New("gagal mengambil data user terbaru")
 	}
 
+	// Log activity
+	LogActivity("UPDATE", "User", userID, "Mengubah data user: "+finalUser.Name, "", "", "")
+
 	return finalUser, nil
 }
 
 func (s *userService) DeleteUser(userID string) error {
+	// Ambil data user sebelum dihapus untuk log
+	user, _ := repository.FindUserByID(userID)
+	userName := ""
+	if user != nil {
+		userName = user.Name
+	}
+
 	// Menggunakan DeleteUser dari repo kamu (langsung lempar string)
 	err := repository.DeleteUser(userID)
 	if err != nil {
-		return errors.New("gagal menghapus user")
+		return err
 	}
+
+	// Log activity (SYNC - bukan goroutine)
+	LogActivity("DELETE", "User", userID, "Menghapus user: "+userName, "", "", "")
+
 	return nil
 }
 

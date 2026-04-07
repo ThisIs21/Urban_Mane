@@ -40,6 +40,12 @@ const getHistory = async (start = '', end = '') => {
   return response.data.data;
 };
 
+const getOwnerDashboard = async () => {
+  const response = await api.get('/dashboard/owner');
+  return response.data;
+};
+
+
 
 export default {
   createOrder,
@@ -50,4 +56,5 @@ export default {
   processPayment,
   cancelOrder,
    getHistory,
+   getOwnerDashboard,
 };

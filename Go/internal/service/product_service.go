@@ -8,25 +8,23 @@ import (
 )
 
 type ProductService interface {
-	 CreateProduct(input model.ProductInput) (*model.Product, error)
-    GetAllProducts(search string) ([]model.Product, error)
-    GetProductByID(id string) (*model.Product, error) // <--- TAMBAHKAN INI
-    UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
-    DeleteProduct(id string) error
-    DeductProductStock(productId string, quantity int) error
+	CreateProduct(input model.ProductInput) (*model.Product, error)
+	GetAllProducts(search string) ([]model.Product, error)
+	GetProductByID(id string) (*model.Product, error) // <--- TAMBAHKAN INI
+	UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
+	DeleteProduct(id string) error
+	DeductProductStock(productId string, quantity int) error
 }
-
 
 type productService struct{}
 
 func (s *productService) GetProductByID(id string) (*model.Product, error) {
-    return repository.FindProductByID(id)
+	return repository.FindProductByID(id)
 }
 
 func NewProductService() ProductService {
 	return &productService{}
 }
-
 
 func (s *productService) CreateProduct(input model.ProductInput) (*model.Product, error) {
 	newProduct := model.Product{
@@ -43,7 +41,10 @@ func (s *productService) CreateProduct(input model.ProductInput) (*model.Product
 		newProduct.IsActive = *input.IsActive
 	}
 
-	return repository.CreateProduct(newProduct)
+	// Log activity (SYNC - not in goroutine)
+	LogActivity("CREATE", "Product", newProduct.ID.Hex(), "Membuat produk baru: "+newProduct.Name+" dengan harga "+intToString(newProduct.Price), "", "", "")
+
+	return &newProduct, nil
 }
 
 func (s *productService) GetAllProducts(search string) ([]model.Product, error) {
@@ -80,6 +81,10 @@ func (s *productService) UpdateProduct(id string, input model.ProductInput) (*mo
 	if err != nil {
 		return nil, err
 	}
+
+	// Log activity
+	LogActivity("UPDATE", "Product", id, "Mengubah produk: "+existing.Name, "", "", "")
+
 	return existing, nil
 }
 
@@ -89,7 +94,15 @@ func (s *productService) DeleteProduct(id string) error {
 		return err
 	}
 	deleteLocalImage(product.Image)
-	return repository.DeleteProduct(id)
+	err = repository.DeleteProduct(id)
+	if err != nil {
+		return err
+	}
+
+	// Log activity
+	LogActivity("DELETE", "Product", id, "Menghapus produk: "+product.Name, "", "", "")
+
+	return nil
 }
 
 func (s *productService) DeductProductStock(productId string, quantity int) error {
@@ -106,8 +119,15 @@ func (s *productService) DeductProductStock(productId string, quantity int) erro
 		return errors.New("stok produk tidak cukup")
 	}
 
-	return repository.DeductProductStock(productId, quantity)
+	product.Stock -= quantity
+
+	err = repository.UpdateProduct(productId, *product)
+	if err != nil {
+		return err
+	}
+
+	// Log activity (SYNC - not in goroutine)
+	LogActivity("UPDATE", "Product", productId, "Mengurangi stok: "+product.Name+" sebanyak "+intToString(quantity), "", "", "")
+
+	return nil
 }
-
-
-

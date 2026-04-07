@@ -3,6 +3,7 @@ package controller
 import (
     "net/http"
     "urban-mane/internal/repository"
+    "time"
 
     "github.com/gin-gonic/gin"
 )
@@ -13,30 +14,34 @@ func NewDashboardController() *DashboardController {
     return &DashboardController{}
 }
 
-// GetOwnerDashboard mengembalikan statistik ringkasan
 func (c *DashboardController) GetOwnerDashboard(ctx *gin.Context) {
-    // 1. Ambil Total Revenue (Dari Order Completed)
-    revenue, err := repository.GetTotalRevenue()
-    if err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal ambil revenue"})
-        return
-    }
+    // Total Pendapatan Bulan Ini
+    now := time.Now()
+    firstDayOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.Local)
+    monthlyRevenue, _ := repository.GetRevenueByDateRange(firstDayOfMonth, now)
 
-    // 2. Ambil Low Stock Products (< 5)
-    lowStock, err := repository.GetLowStockProducts(5)
-    if err != nil {
-        lowStock = nil // Jangan stop jika error kecil
-    }
+    // Total Transaksi
+    totalTransactions, _ := repository.CountCompletedOrders()
 
-    // 3. Ambil Top Barber (Sederhana: siapa yang paling banyak order?
-    topBarbers, err := repository.GetTopBarbers(3)
-    if err != nil {
-        topBarbers = nil
-    }
+    // Produk Aktif
+    activeProducts, _ := repository.CountActiveProducts()
+
+    // Data untuk Chart Mingguan (7 hari terakhir)
+    weeklyData, _ := repository.GetWeeklyRevenue()
+
+    // Data untuk Pie Chart (Distribusi Penjualan)
+    salesDist, _ := repository.GetSalesDistribution()
+
+    // Transaksi Terakhir
+    recentOrders, _ := repository.GetRecentOrders(5)
 
     ctx.JSON(http.StatusOK, gin.H{
-        "total_revenue": revenue,
-        "low_stock":     lowStock,
-        "top_barbers":   topBarbers,
+        "monthly_revenue":    monthlyRevenue,
+        "total_transactions": totalTransactions,
+        "active_products":    activeProducts,
+        "weekly_data":        weeklyData,
+        "sales_distribution": salesDist,
+        "recent_orders":      recentOrders,
     })
 }
+

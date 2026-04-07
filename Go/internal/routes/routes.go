@@ -21,6 +21,7 @@ func RegisterRoutes(
 		 transactionController *controller.TransactionController,
 		 orderController *controller.OrderController,
 		 dashboardController *controller.DashboardController,
+		 logController *controller.LogController,
 		) {
 
 	// Public
@@ -49,7 +50,7 @@ func RegisterRoutes(
 
 		// Products Management (Admin Only)
 		products := api.Group("/products")
-		products.Use(middleware.RoleMiddleware("admin", "cashier")) // Admin & Kasir bisa akses produk
+		products.Use(middleware.RoleMiddleware("admin", "cashier", "owner")) // Admin & Kasir bisa akses produk
 		{
 			products.GET("", productController.GetProducts)
 			products.POST("", productController.CreateProduct)
@@ -89,7 +90,7 @@ func RegisterRoutes(
     }
 
 	orders := api.Group("/orders")
-    orders.Use(middleware.RoleMiddleware("admin", "cashier"))
+    orders.Use(middleware.RoleMiddleware("admin", "cashier", "owner")) 
     {
         orders.POST("", orderController.CreateOrder)       // Buat order baru
         orders.GET("/queue", orderController.GetQueue)     // Lihat antrian
@@ -109,6 +110,12 @@ func RegisterRoutes(
     {
         dash.GET("/owner", dashboardController.GetOwnerDashboard)
     }
+
+	logs := api.Group("/logs")
+logs.Use(middleware.RoleMiddleware("owner"))
+{
+    logs.GET("", logController.GetLogs)
+}
 }
 
 	

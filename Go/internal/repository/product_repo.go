@@ -178,3 +178,8 @@ func GetLowStockProducts(threshold int) ([]model.Product, error) {
     cursor.All(context.TODO(), &products)
     return products, nil
 }
+
+func CountActiveProducts() (int64, error) {
+    return productCollection.CountDocuments(context.TODO(), bson.M{"isActive": true})
+}
+

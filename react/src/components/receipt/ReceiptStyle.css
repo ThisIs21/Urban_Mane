@@ -1,0 +1,262 @@
+/* ========================================
+   RECEIPT STYLES - Thermal Printer Format
+   ======================================== */
+
+.receipt-container {
+  width: 80mm;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: #fff;
+  color: #000;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ===== HEADER ===== */
+.receipt-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.receipt-logo {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.receipt-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 4px 0;
+  letter-spacing: 1px;
+  color: #141312;
+}
+
+.receipt-subtitle {
+  font-size: 10px;
+  color: #666;
+  margin: 2px 0 0 0;
+  font-weight: normal;
+}
+
+/* ===== DIVIDERS ===== */
+.receipt-divider {
+  border-top: 2px dashed #999;
+  margin: 10px 0;
+  opacity: 0.8;
+}
+
+.receipt-divider-thin {
+  border-top: 1px solid #ccc;
+  margin: 6px 0;
+}
+
+/* ===== INFO SECTIONS ===== */
+.receipt-info,
+.receipt-people,
+.receipt-payment {
+  margin: 8px 0;
+  text-align: left;
+  font-size: 12px;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+  gap: 2px;
+}
+
+.receipt-row.change {
+  color: #4CAF7D;
+  font-weight: bold;
+}
+
+.receipt-row.discount {
+  color: #E05252;
+}
+
+.receipt-label {
+  flex-shrink: 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.receipt-value {
+  flex: 1;
+  text-align: right;
+  color: #000;
+}
+
+/* ===== ITEMS TABLE ===== */
+.receipt-items {
+  margin: 8px 0;
+  text-align: left;
+}
+
+.receipt-items-header {
+  display: grid;
+  grid-template-columns: 1fr 40px 50px;
+  gap: 4px;
+  margin-bottom: 4px;
+  font-weight: bold;
+  font-size: 11px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+.receipt-items-header .col-name {
+  text-align: left;
+}
+
+.receipt-items-header .col-qty {
+  text-align: center;
+}
+
+.receipt-items-header .col-price {
+  text-align: right;
+}
+
+.receipt-items-row {
+  display: grid;
+  grid-template-columns: 1fr 40px 50px;
+  gap: 4px;
+  margin: 3px 0;
+  font-size: 12px;
+  align-items: center;
+}
+
+.receipt-items-row .col-name {
+  text-align: left;
+  word-break: break-word;
+}
+
+.receipt-items-row .col-qty {
+  text-align: center;
+}
+
+.receipt-items-row .col-price {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* ===== SUMMARY SECTION ===== */
+.receipt-summary {
+  margin: 8px 0;
+  text-align: right;
+}
+
+.receipt-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.receipt-summary-row.total {
+  font-size: 14px;
+  font-weight: bold;
+  color: #141312;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #ccc;
+}
+
+.receipt-summary-row.discount {
+  color: #E05252;
+}
+
+/* ===== FOOTER ===== */
+.receipt-footer {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #666;
+}
+
+.receipt-footer p {
+  margin: 3px 0;
+}
+
+.receipt-footer-date {
+  font-size: 10px;
+  color: #999;
+  margin-top: 6px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .receipt-container {
+    width: auto;
+    max-width: 80mm;
+    margin: 0;
+    padding: 0;
+    background: white;
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  /* Hide scrollbars and UI elements during print */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent page breaks inside receipt */
+  .receipt-header,
+  .receipt-info,
+  .receipt-people,
+  .receipt-items,
+  .receipt-summary,
+  .receipt-payment,
+  .receipt-footer {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== RESPONSIVE (for PDF export / screen viewing) ===== */
+@media (max-width: 600px) {
+  .receipt-container {
+    width: 100%;
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .receipt-title {
+    font-size: 16px;
+  }
+
+  .receipt-items-header,
+  .receipt-items-row {
+    grid-template-columns: 1fr 35px 45px;
+    font-size: 11px;
+  }
+
+  .receipt-summary-row.total {
+    font-size: 13px;
+  }
+}
+
+/* ===== DARK MODE SUPPORT (optional) ===== */
+@media (prefers-color-scheme: dark) {
+  .receipt-container {
+    background-color: #1a1a1a;
+    color: #000;
+  }
+
+  /* Keep text dark for print */
+  @media print {
+    .receipt-container {
+      background-color: white;
+      color: black;
+    }
+  }
+}

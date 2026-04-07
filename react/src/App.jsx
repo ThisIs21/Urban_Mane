@@ -25,6 +25,9 @@ import History from "./pages/kasir/History";
 
 //Owner Pages
 import OwnerDashboard from "./pages/owner/Dashboard";
+import OwnerProducts from "./pages/owner/Products";
+import Reports from "./pages/owner/Reports";
+import ActivityLog from "./pages/owner/ActivityLog";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -99,6 +102,9 @@ function App() {
             }
           >
             <Route path="dashboard" element={<OwnerDashboard />} />
+            <Route path="products" element={<OwnerProducts />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="activity-log" element={<ActivityLog />} />
             {/* Route lainnya */}
           </Route>
 

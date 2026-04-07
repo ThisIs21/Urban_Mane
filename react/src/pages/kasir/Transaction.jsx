@@ -6,6 +6,7 @@ import orderService from "../../services/orderService";
 import transactionService from "../../services/transactionService";
 import userService from "../../services/userService";
 import Modal from "../../components/shared/Modal";
+import useReceipt from '../../hooks/useReceipt';
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────── */
 const css = `
@@ -485,6 +486,8 @@ const Transaction = () => {
   const [directSaleModal, setDirectSaleModal] = useState(false);
   const [detailModal, setDetailModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  // Receipt utilities
+  const { receiptRef, exportToPDF } = useReceipt();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -509,12 +512,69 @@ const Transaction = () => {
     fetchData();
   }, []);
 
+  // Helper: Check if bundle has any services
+  const bundleHasService = (bundle) => {
+    return bundle && bundle.services && bundle.services.length > 0;
+  };
+
+  // Helper: Expand bundle items to actual products and services for backend
+  // Backend doesn't support type="bundle", so we need to convert bundles to products+services
+  const expandBundleToItems = () => {
+    const expandedItems = [];
+    cart.forEach(cartItem => {
+      if (cartItem.type === 'bundle' && cartItem.details) {
+        // Add products from bundle
+        if (cartItem.details.products && cartItem.details.products.length > 0) {
+          cartItem.details.products.forEach(prod => {
+            expandedItems.push({
+              itemId: prod.productId || prod.id,
+              quantity: prod.quantity * cartItem.quantity,  // Multiply by bundle quantity
+              type: 'product'
+            });
+          });
+        }
+        // Add services from bundle
+        if (cartItem.details.services && cartItem.details.services.length > 0) {
+          cartItem.details.services.forEach(serv => {
+            expandedItems.push({
+              itemId: serv.serviceId || serv.id,
+              quantity: cartItem.quantity,  // Service usually 1x per bundle
+              type: 'service'
+            });
+          });
+        }
+      } else {
+        // Regular product or service - add as is
+        expandedItems.push({
+          itemId: cartItem.id,
+          quantity: cartItem.quantity,
+          type: cartItem.type
+        });
+      }
+    });
+    return expandedItems;
+  };
+
   const addToCart = (item, type) => {
     const exist = cart.find(x => x.id === item.id && x.type === type);
+    // Handle bundlePrice for bundles, price for products/services
+    let itemPrice;
+    if (type === 'bundle') {
+      itemPrice = item.bundlePrice || item.price || 0;
+      console.log('[DEBUG addToCart] Bundle:', item.name, 'bundlePrice:', item.bundlePrice, 'price:', item.price, 'final:', itemPrice);
+    } else {
+      itemPrice = item.price || 0;
+    }
+    
+    if (isNaN(itemPrice) || itemPrice <= 0) {
+      console.error('[ERROR] Invalid price for item:', item.name, 'price:', itemPrice);
+      return alert(`Harga ${item.name} tidak valid!`);
+    }
+    
     if (exist) {
       setCart(cart.map(x => x.id === item.id && x.type === type ? { ...x, quantity: x.quantity + 1 } : x));
     } else {
-      setCart([...cart, { id: item.id, name: item.name, price: item.price, quantity: 1, type }]);
+      setCart([...cart, { id: item.id, name: item.name, price: itemPrice, quantity: 1, type, details: item }]);
     }
   };
 
@@ -531,24 +591,31 @@ const Transaction = () => {
   const formatRupiahInput = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   const formatRp = (num) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(num);
 
-  const subTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const discountAmount = Math.round(subTotal * (discountPercent / 100));
   const grandTotal = subTotal - discountAmount;
   const change = payAmount - grandTotal;
-  const isServiceMode = cart.some(i => i.type === 'service' || i.type === 'bundle') || selectedBarber;
+  
+  // Service mode logic: hanya jika ada SERVICE atau BUNDLE DENGAN SERVICE
+  const hasService = cart.some(i => i.type === 'service' || (i.type === 'bundle' && bundleHasService(i.details)));
+  const isServiceMode = hasService || selectedBarber;
 
   const handleProcess = async () => {
     if (cart.length === 0) return alert("Keranjang kosong!");
     setLoading(true);
     try {
       if (isServiceMode) {
-        if (cart.some(i => i.type === 'service' || i.type === 'bundle') && !selectedBarber) {
+        // Validasi: jika ada service atau bundle dengan service, barber wajib dipilih
+        if (hasService && !selectedBarber) {
           setLoading(false);
           return alert("Untuk Service/Paket, Barber wajib dipilih!");
         }
+        // ✨ EXPAND BUNDLE: Convert bundle items to products + services
+        const expandedItems = expandBundleToItems();
+        console.log('[DEBUG] Expanded items for order:', expandedItems);
         await orderService.createOrder({
           customerName, barberId: selectedBarber,
-          items: cart.map(i => ({ itemId: i.id, quantity: i.quantity, type: i.type })),
+          items: expandedItems,  // Use expanded items instead of raw cart
         });
         alert("Order berhasil dibuat!");
         setCart([]); setCustomerName(""); setSelectedBarber(""); setDiscountPercent(0); setPayAmount(0);
@@ -563,18 +630,142 @@ const Transaction = () => {
     }
   };
 
+  // Helper function to expand bundle items for receipt display
+  const expandBundleItems = () => {
+    const itemsDisplay = [];
+    cart.forEach(cartItem => {
+      if (cartItem.type === 'bundle' && cartItem.details) {
+        // Show bundle name with quantity
+        itemsDisplay.push(`
+          <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin: 6px 0; font-size: 12px; font-weight: bold; padding: 4px 0; border-bottom: 1px dotted #ddd;">
+            <span style="color: #666;">📦 ${cartItem.name} x${cartItem.quantity}</span>
+            <span></span>
+            <span style="text-align: right;">Rp ${(cartItem.quantity * cartItem.price).toLocaleString('id-ID')}</span>
+          </div>
+        `);
+        
+        // Show products inside bundle
+        if (cartItem.details.products && cartItem.details.products.length > 0) {
+          cartItem.details.products.forEach(prod => {
+            itemsDisplay.push(`
+              <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin: 2px 0 2px 16px; font-size: 11px; color: #666;">
+                <span>├─ ${prod.productName} (Produk)</span>
+                <span style="text-align: center;">x${prod.quantity}</span>
+                <span></span>
+              </div>
+            `);
+          });
+        }
+        
+        // Show services inside bundle
+        if (cartItem.details.services && cartItem.details.services.length > 0) {
+          cartItem.details.services.forEach(serv => {
+            itemsDisplay.push(`
+              <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin: 2px 0 2px 16px; font-size: 11px; color: #666;">
+                <span>├─ ${serv.serviceName} (Layanan)</span>
+                <span style="text-align: center;">x1</span>
+                <span></span>
+              </div>
+            `);
+          });
+        }
+      } else {
+        // Regular product or service
+        const typeLabel = cartItem.type === 'product' ? 'Produk' : 'Layanan';
+        itemsDisplay.push(`
+          <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin: 3px 0; font-size: 12px;">
+            <span>${cartItem.name} (${typeLabel})</span>
+            <span style="text-align: center;">x${cartItem.quantity}</span>
+            <span style="text-align: right; font-weight: bold;">Rp ${(cartItem.quantity * cartItem.price).toLocaleString('id-ID')}</span>
+          </div>
+        `);
+      }
+    });
+    return itemsDisplay.join('');
+  };
+
   const handleDirectPayment = async () => {
     if (payAmount < grandTotal) return alert("Uang kurang!");
     try {
       setLoading(true);
-      await transactionService.createTransaction({
+      // ✨ EXPAND BUNDLE: Convert bundle items to products + services
+      const expandedItems = expandBundleToItems();
+      console.log('[DEBUG] Expanded items for transaction:', expandedItems);
+      const transactionData = await transactionService.createTransaction({
         customerName,
-        items: cart.map(i => ({ itemId: i.id, quantity: i.quantity, type: i.type })),
-        discount: discountAmount, payAmount, paymentMethod: "cash",
+        items: expandedItems,  // Use expanded items instead of raw cart
+        discount: discountAmount, 
+        payAmount, 
+        paymentMethod: "cash",
+        cashierName: localStorage.getItem('userName') || 'Kasir',
+        cashierId: localStorage.getItem('userId') || '',
       });
-      alert("Transaksi Sukses!");
+      
+      const cashierName = localStorage.getItem('userName') || 'Kasir';
+      
+      // Siapkan HTML receipt untuk PDF
+      const receiptHTML = `<div style="width: 80mm; margin: 0 auto; padding: 15px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.5;">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <div style="font-size: 32px; margin-bottom: 4px;">✂️</div>
+          <h1 style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold; margin: 4px 0; letter-spacing: 1px;">URBAN MANE</h1>
+          <p style="font-size: 10px; color: #666; margin: 2px 0 0 0;">Barbershop Professional</p>
+          <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        </div>
+        <div style="margin: 8px 0; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Invoice:</span><span>${transactionData._id || transactionData.id}</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Tanggal:</span><span>${new Date().toLocaleString('id-ID')}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Customer:</span><span>${customerName || 'Walk-in'}</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Kasir:</span><span>${cashierName}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0;">
+          <div style="display: grid; grid-template-columns: 1fr 40px 50px; gap: 4px; margin-bottom: 4px; font-weight: bold; font-size: 11px; border-bottom: 1px solid #ccc; padding-bottom: 4px;">
+            <span style="text-align: left;">Item</span><span style="text-align: center;">Qty</span><span style="text-align: right;">Harga</span>
+          </div>
+          ${expandBundleItems()}
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="text-align: right; margin: 8px 0;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 12px;"><span>Subtotal:</span><span>Rp ${(grandTotal + discountAmount).toLocaleString('id-ID')}</span></div>
+          ${discountAmount > 0 ? `<div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 12px; color: #E05252;"><span>Diskon:</span><span>-Rp ${discountAmount.toLocaleString('id-ID')}</span></div>` : ''}
+          <div style="border-top: 1px solid #ccc; margin: 6px 0;"></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0; font-size: 14px; font-weight: bold;"><span>TOTAL:</span><span>Rp ${grandTotal.toLocaleString('id-ID')}</span></div>
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="margin: 8px 0; text-align: left; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight:bold;">Metode:</span><span>Cash</span></div>
+          <div style="display: flex; justify-content: space-between; margin: 4px 0;"><span style="font-weight: bold;">Dibayar:</span><span>Rp ${payAmount.toLocaleString('id-ID')}</span></div>
+          ${(payAmount - grandTotal) > 0 ? `<div style="display: flex; justify-content: space-between; margin: 4px 0; color: #4CAF7D; font-weight: bold;"><span>Kembalian:</span><span>Rp ${(payAmount - grandTotal).toLocaleString('id-ID')}</span></div>` : ''}
+        </div>
+        <div style="border-top: 2px dashed #999; margin: 10px 0;"></div>
+        <div style="text-align: center; margin-top: 12px; font-size: 11px; color: #666;">
+          <p style="margin: 3px 0;">Terima kasih atas kunjungan Anda!</p>
+          <p style="margin: 3px 0;">Semoga puas dengan layanan kami</p>
+        </div>
+      </div>`; 
+      
+      receiptRef.current.innerHTML = receiptHTML;
+      
+      // Auto-download PDF
+      setTimeout(() => {
+        exportToPDF(`struk-transaksi-${Date.now()}.pdf`);
+      }, 200);
+      
       setDirectSaleModal(false);
-      setCart([]); setCustomerName(""); setDiscountPercent(0); setPayAmount(0);
+      setCart([]); 
+      setCustomerName(""); 
+      setDiscountPercent(0); 
+      setPayAmount(0);
+      
+      alert("Transaksi Sukses! PDF sedang di-download...");
+      
+      // Auto-reload halaman setelah 3 detik
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (err) {
       alert(err.response?.data?.error || "Gagal bayar");
     } finally {
@@ -639,7 +830,9 @@ const Transaction = () => {
               {currentItems.length === 0 ? (
                 <div style={{ gridColumn:"1/-1", textAlign:"center", color:"var(--text-3)", fontSize:13, paddingTop:40 }}>Tidak ada item</div>
               ) : currentItems.map(item => {
-                const stockBadge = currentType === 'product' ? getStockBadge(item.stock) : null;
+                // Determine display price: bundlePrice for bundles, price for others
+                const displayPrice = currentType === 'bundle' ? item.bundlePrice : item.price;
+                const stockBadge = (currentType === 'product' || currentType === 'bundle') ? getStockBadge(item.stock) : null;
                 const imgUrl = getImgUrl(item, currentType);
                 const inCart = cart.find(x => x.id === item.id && x.type === currentType);
                 return (
@@ -662,10 +855,9 @@ const Transaction = () => {
                     </div>
                     <div className="item-info" onClick={() => addToCart(item, currentType)}>
                       <p className="item-name">{item.name}</p>
-                      <p className="item-price">{formatRp(item.price)}</p>
-                      {currentType === 'product' && <span className={`item-badge ${stockBadge.cls}`}>{stockBadge.text}</span>}
+                      <p className="item-price">{formatRp(displayPrice)}</p>
+                      {(currentType === 'product' || currentType === 'bundle') && <span className={`item-badge ${stockBadge?.cls}`}>{stockBadge?.text}</span>}
                       {currentType === 'service' && item.duration && <span className="item-badge badge-blue">{item.duration} menit</span>}
-                      {currentType === 'bundle' && <span className="item-badge badge-purple">Paket Hemat</span>}
                     </div>
                   </div>
                 );
@@ -716,6 +908,21 @@ const Transaction = () => {
           )}
 
           <div className="checkout-area">
+            {/* Cashier Info */}
+            <div style={{ 
+              padding: '12px', 
+              background: 'rgba(201,168,76,0.08)', 
+              border: '1px solid rgba(201,168,76,0.2)', 
+              borderRadius: '8px',
+              marginBottom: '16px',
+              fontSize: '13px'
+            }}>
+              <span style={{ color: 'var(--text-3)' }}>Kasir: </span>
+              <span style={{ color: 'var(--gold)', fontWeight: '600' }}>
+                {localStorage.getItem('userName') || 'Nama Kasir'}
+              </span>
+            </div>
+
             <input className="txn-input" type="text" placeholder="Nama Pelanggan (opsional)" value={customerName} onChange={e => setCustomerName(e.target.value)} />
 
             <select className="txn-input" value={selectedBarber} onChange={e => setSelectedBarber(e.target.value)}>
@@ -842,6 +1049,9 @@ const Transaction = () => {
             </button>
           </div>
         </Modal>
+
+        {/* ── Hidden receipt ref for PDF generation ── */}
+        <div ref={receiptRef} style={{ display: 'none' }}></div>
       </div>
     </>
   );
