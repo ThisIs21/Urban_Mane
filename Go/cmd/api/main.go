@@ -28,7 +28,8 @@ func main() {
 	repository.InitServiceCollection()
 	repository.InitBundleCollection()
 	repository.InitTransactionCollection()
-	 repository.InitOrderCollection()
+	repository.InitOrderCollection()
+	repository.InitLogCollection()
 
 	// === INIT LAYERS ===
 
@@ -39,7 +40,6 @@ func main() {
 	// User
 	userService := service.NewUserService()
 	userController := controller.NewUserController(userService)
-	
 
 	// Product
 	productService := service.NewProductService()
@@ -58,12 +58,14 @@ func main() {
 	transactionController := controller.NewTransactionController(transactionService)
 
 	// ORDER SERVICE
-    orderService := service.NewOrderService() 
-    orderController := controller.NewOrderController(orderService)
+	orderService := service.NewOrderService()
+	orderController := controller.NewOrderController(orderService)
 
 	// Dashboard
 	dashboardController := controller.NewDashboardController()
 
+	// Log
+	logController := controller.NewLogController()
 
 	// Router
 	r := gin.Default()
@@ -105,13 +107,14 @@ func main() {
 	// Register Routes
 	routes.RegisterRoutes(
 		r, authController,
-		 userController,
-		  productController,
-		   serviceController,
-		    bundleController,
-			 transactionController,
-			  orderController,
-			dashboardController)
+		userController,
+		productController,
+		serviceController,
+		bundleController,
+		transactionController,
+		orderController,
+		dashboardController,
+		logController)
 
 	// Run
 	port := os.Getenv("PORT")
