@@ -13,16 +13,16 @@ import (
 // RegisterRoutes attaches all route groups to the main engine
 func RegisterRoutes(
 	r *gin.Engine,
-	 authController *controller.AuthController,
-	 userController *controller.UserController,
-	  productController *controller.ProductController,
-	   serviceController *controller.ServiceController,
-	    bundleController *controller.BundleController,
-		 transactionController *controller.TransactionController,
-		 orderController *controller.OrderController,
-		 dashboardController *controller.DashboardController,
-		 logController *controller.LogController,
-		) {
+	authController *controller.AuthController,
+	userController *controller.UserController,
+	productController *controller.ProductController,
+	serviceController *controller.ServiceController,
+	bundleController *controller.BundleController,
+	transactionController *controller.TransactionController,
+	orderController *controller.OrderController,
+	dashboardController *controller.DashboardController,
+	logController *controller.LogController,
+) {
 
 	// Public
 	auth := r.Group("/api/v1/auth")
@@ -83,44 +83,41 @@ func RegisterRoutes(
 			bundles.PUT("/:id/stock", bundleController.UpdateStock)
 		}
 
-		
-    tx := api.Group("/transactions")
-    tx.Use(middleware.RoleMiddleware("admin", "cashier")) 
-    {
-        tx.POST("", transactionController.CreateTransaction)
-        tx.GET("", transactionController.GetTransactions)
-    }
+		tx := api.Group("/transactions")
+		tx.Use(middleware.RoleMiddleware("admin", "cashier"))
+		{
+			tx.POST("", transactionController.CreateTransaction)
+			tx.GET("", transactionController.GetTransactions)
+		}
 
-	orders := api.Group("/orders")
-    orders.Use(middleware.RoleMiddleware("admin", "cashier", "owner")) 
-    {
-        orders.POST("", orderController.CreateOrder)       // Buat order baru
-        orders.GET("/queue", orderController.GetQueue)     // Lihat antrian
-        orders.GET("/payment", orderController.GetWaitingPayment) // Lihat yg mau bayar
-        
-        // Aksi terhadap order spesifik
-        orders.PUT("/:id/start", orderController.StartOrder)
-        orders.PUT("/:id/finish", orderController.FinishOrder)
-        orders.PUT("/:id/pay", orderController.ProcessPayment)
-        orders.PUT("/:id/cancel", orderController.CancelOrder)
-		// Di dalam group orders
-		orders.GET("/history", orderController.GetHistory)
-    }
+		orders := api.Group("/orders")
+		orders.Use(middleware.RoleMiddleware("admin", "cashier", "owner"))
+		{
+			orders.POST("", orderController.CreateOrder)              // Buat order baru
+			orders.GET("/queue", orderController.GetQueue)            // Lihat antrian
+			orders.GET("/payment", orderController.GetWaitingPayment) // Lihat yg mau bayar
 
-	dash := api.Group("/dashboard")
-    dash.Use(middleware.RoleMiddleware("owner"))
-    {
-        dash.GET("/owner", dashboardController.GetOwnerDashboard)
-    }
+			// Aksi terhadap order spesifik
+			orders.PUT("/:id/start", orderController.StartOrder)
+			orders.PUT("/:id/finish", orderController.FinishOrder)
+			orders.PUT("/:id/pay", orderController.ProcessPayment)
+			orders.PUT("/:id/cancel", orderController.CancelOrder)
+			// Di dalam group orders
+			orders.GET("/history", orderController.GetHistory)
+		}
 
-	logs := api.Group("/logs")
-logs.Use(middleware.RoleMiddleware("owner"))
-{
-    logs.GET("", logController.GetLogs)
-}
-}
+		dash := api.Group("/dashboard")
+		dash.Use(middleware.RoleMiddleware("owner"))
+		{
+			dash.GET("/owner", dashboardController.GetOwnerDashboard)
+		}
 
-	
+		logs := api.Group("/logs")
+		logs.Use(middleware.RoleMiddleware("owner"))
+		{
+			logs.GET("", logController.GetLogs)
+		}
+	}
 
 	// Static files untuk uploaded images
 	workDir, _ := os.Getwd()
