@@ -1,0 +1,370 @@
+[{
+  "_id": {
+    "$oid": "69cf770bd38c9af87dc13e98"
+  },
+  "name": "Basic Grooming Package",
+  "description": "Haircut and beard trimming combo",
+  "image": "/images/products/product_1775311871.jpeg",
+  "products": [],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf76208ffcf1d2756b5b60"
+      },
+      "serviceName": "Beard Trimming"
+    },
+    {
+      "serviceId": {
+        "$oid": "69cf76208ffcf1d2756b5b63"
+      },
+      "serviceName": "Kids Haircut"
+    }
+  ],
+  "bundlePrice": 70000,
+  "stock": 9,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-08T06:49:14.051Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf770bd38c9af87dc13e99"
+  },
+  "name": "Premium Care Bundle",
+  "description": "Complete hair and beard care package",
+  "image": "/images/products/product_1775311852.jpeg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8b"
+      },
+      "productName": "Beard Oil",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf770bd38c9af87dc13e97"
+      },
+      "serviceName": "Perm Treatment"
+    }
+  ],
+  "bundlePrice": 150000,
+  "stock": 5,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:10:54.017Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf770bd38c9af87dc13e9a"
+  },
+  "name": "Kids Special Package",
+  "description": "Fun haircut for kids with special treatment",
+  "image": "/images/products/product_1775311831.jpeg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8b"
+      },
+      "productName": "Beard Oil",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf770bd38c9af87dc13e93"
+      },
+      "serviceName": "Beard Trimming"
+    }
+  ],
+  "bundlePrice": 60000,
+  "stock": 8,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:10:41.465Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf781ddd5118a7db57098b"
+  },
+  "name": "Basic Grooming Package",
+  "description": "Haircut and beard trimming combo",
+  "image": "/images/products/product_1775311941.jpg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf768d31f43a8b613a524b"
+      },
+      "productName": "Face Wash",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf770bd38c9af87dc13e93"
+      },
+      "serviceName": "Beard Trimming"
+    }
+  ],
+  "bundlePrice": 70000,
+  "stock": 10,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:12:23.431Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf781ddd5118a7db57098c"
+  },
+  "name": "Premium Care Bundle",
+  "description": "Complete hair and beard care package",
+  "image": "/images/products/product_1775311914.jpg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8b"
+      },
+      "productName": "Beard Oil",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf770bd38c9af87dc13e95"
+      },
+      "serviceName": "Hot Towel Treatment"
+    }
+  ],
+  "bundlePrice": 150000,
+  "stock": 5,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:11:54.971Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf781ddd5118a7db57098d"
+  },
+  "name": "Kids Special Package",
+  "description": "Fun haircut for kids with special treatment",
+  "image": "/images/products/product_1775311955.jpeg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf768d31f43a8b613a5249"
+      },
+      "productName": "Shampoo",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf768d31f43a8b613a524f"
+      },
+      "serviceName": "Hair Coloring"
+    }
+  ],
+  "bundlePrice": 60000,
+  "stock": 8,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:12:43.574Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf7ae275ebac2d3d2f2e50"
+  },
+  "name": "Basic Grooming Package",
+  "description": "Haircut and beard trimming combo",
+  "image": "/images/products/product_1775311972.jpg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf768d31f43a8b613a5245"
+      },
+      "productName": "Pomade Hair Wax",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf768d31f43a8b613a524e"
+      },
+      "serviceName": "Beard Trimming"
+    }
+  ],
+  "bundlePrice": 70000,
+  "stock": 10,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:12:58.438Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf7ae275ebac2d3d2f2e51"
+  },
+  "name": "Premium Care Bundle",
+  "description": "Complete hair and beard care package",
+  "image": "/images/products/product_1775311805.jpg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8d"
+      },
+      "productName": "Hair Spray",
+      "quantity": 1
+    },
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8b"
+      },
+      "productName": "Beard Oil",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf76208ffcf1d2756b5b61"
+      },
+      "serviceName": "Hair Coloring"
+    }
+  ],
+  "bundlePrice": 150000,
+  "stock": 5,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:10:17.138Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf7ae275ebac2d3d2f2e52"
+  },
+  "name": "Kids Special Package",
+  "description": "Fun haircut for kids with special treatment",
+  "image": "/images/products/product_1775311772.jpeg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf770bd38c9af87dc13e8a"
+      },
+      "productName": "Pomade Hair Wax",
+      "quantity": 1
+    }
+  ],
+  "services": [
+    {
+      "serviceId": {
+        "$oid": "69cf770bd38c9af87dc13e95"
+      },
+      "serviceName": "Hot Towel Treatment"
+    }
+  ],
+  "bundlePrice": 60000,
+  "stock": 8,
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:09:51.027Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52f2b2b18b4f30ae0f119"
+  },
+  "name": "Kahf Kit",
+  "description": "123",
+  "image": "/images/products/product_1775578912.jpeg",
+  "products": [
+    {
+      "productId": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "productName": "Beard Oil",
+      "quantity": 1
+    },
+    {
+      "productId": {
+        "$oid": "69cf768d31f43a8b613a5245"
+      },
+      "productName": "Pomade Hair Wax",
+      "quantity": 1
+    },
+    {
+      "productId": {
+        "$oid": "69cf76208ffcf1d2756b5b5c"
+      },
+      "productName": "Conditioner",
+      "quantity": 1
+    }
+  ],
+  "services": [],
+  "bundlePrice": 100000,
+  "stock": 49,
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-07T16:22:03.319Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-08T16:20:20.906Z"
+  }
+}]

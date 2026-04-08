@@ -1,0 +1,178 @@
+[{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b58"
+  },
+  "name": "Beard Oil",
+  "description": "Nourishing oil for beard care",
+  "price": 75000,
+  "stock": 34,
+  "category": "Beard Care",
+  "image": "/images/products/product_1775312884.jpeg",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-08T16:20:55.458Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b59"
+  },
+  "name": "Hair Tonic",
+  "description": "Refreshing tonic for scalp and hair",
+  "price": 60000,
+  "stock": 13,
+  "category": "Hair Care",
+  "image": "/images/products/product_1775385327.jfif",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:35:28.348Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5a"
+  },
+  "name": "Hair Spray",
+  "description": "Light hold spray for styling",
+  "price": 45000,
+  "stock": 25,
+  "category": "Hair Care",
+  "image": "/images/products/product_1775385343.jfif",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:35:44.564Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5b"
+  },
+  "name": "Shampoo",
+  "description": "Gentle shampoo for all hair types",
+  "price": 35000,
+  "stock": 37,
+  "category": "Hair Care",
+  "image": "/images/products/product_1775385383.webp",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:36:24.011Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5c"
+  },
+  "name": "Conditioner",
+  "description": "Deep conditioning treatment",
+  "price": 40000,
+  "stock": 24,
+  "category": "Hair Care",
+  "image": "/images/products/product_1775385429.jpg",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:37:10.331Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5d"
+  },
+  "name": "Face Wash",
+  "description": "Daily face cleanser",
+  "price": 30000,
+  "stock": 49,
+  "category": "Skincare",
+  "image": "/images/products/product_1775385473.jfif",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:37:54.837Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5e"
+  },
+  "name": "Aftershave Balm",
+  "description": "Soothing balm after shaving",
+  "price": 55000,
+  "stock": 20,
+  "category": "Skincare",
+  "image": "/images/products/product_1775385556.webp",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:39:16.929Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf768d31f43a8b613a5245"
+  },
+  "name": "Pomade Hair Wax",
+  "description": "Strong hold pomade for classic hairstyles",
+  "price": 50000,
+  "stock": 11,
+  "category": "Hair Care",
+  "image": "/images/products/product_1775385567.jfif",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:39:28.350Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf768d31f43a8b613a5246"
+  },
+  "name": "Beard Oil",
+  "description": "Nourishing oil for beard care",
+  "price": 75000,
+  "stock": 15,
+  "category": "Beard Care",
+  "image": "/images/products/product_1775385612.jfif",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:13:01.307Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T10:40:13.816Z"
+  }
+}]

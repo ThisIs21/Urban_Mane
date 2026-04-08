@@ -1,0 +1,152 @@
+[{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b5f"
+  },
+  "name": "Haircut",
+  "price": 50000,
+  "duration": 30,
+  "category": "Hair Service",
+  "image": "/images/products/product_1775312825.jpeg",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.104Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:27:07.261Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b60"
+  },
+  "name": "Beard Trimming",
+  "price": 30000,
+  "duration": 15,
+  "category": "Beard Service",
+  "image": "/images/products/product_1775312847.jpeg",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.104Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:27:29.639Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b61"
+  },
+  "name": "Hair Coloring",
+  "price": 150000,
+  "duration": 60,
+  "category": "Hair Service",
+  "image": "/images/products/product_1775388760.jfif",
+  "requiredProducts": [
+    {
+      "productId": {
+        "$oid": "000000000000000000000000"
+      },
+      "productName": "",
+      "quantity": 1
+    }
+  ],
+  "isActive": false,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.104Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:32:56.281Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b62"
+  },
+  "name": "Hot Towel Treatment",
+  "price": 25000,
+  "duration": 10,
+  "category": "Treatment",
+  "image": "/images/products/product_1775388785.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.105Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:33:06.516Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b63"
+  },
+  "name": "Kids Haircut",
+  "price": 40000,
+  "duration": 25,
+  "category": "Hair Service",
+  "image": "/images/products/product_1775388796.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.105Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:33:17.611Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf76208ffcf1d2756b5b64"
+  },
+  "name": "Perm Treatment",
+  "price": 200000,
+  "duration": 90,
+  "category": "Hair Service",
+  "image": "/images/products/product_1775388804.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:11:12.106Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:33:26.292Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf768d31f43a8b613a524d"
+  },
+  "name": "Haircut",
+  "price": 50000,
+  "duration": 30,
+  "category": "Hair Service",
+  "image": "/images/products/product_1775388827.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:13:01.310Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:33:48.582Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf768d31f43a8b613a524e"
+  },
+  "name": "Beard Trimming",
+  "price": 30000,
+  "duration": 15,
+  "category": "Beard Service",
+  "image": "/images/products/product_1775388839.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-03T08:13:01.310Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:34:00.612Z"
+  }
+}]

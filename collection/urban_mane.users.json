@@ -1,0 +1,118 @@
+[{
+  "_id": {
+    "$oid": "69cf74ea47420f0745b95a00"
+  },
+  "name": "Administrator",
+  "email": "admin@local",
+  "password": "$2a$10$QGptzI4CWuYtKjqUcUi/T.CWPud/BTrlVNM/WCXrwywYgxYzncee.",
+  "role": "admin",
+  "phone": "",
+  "photoUrl": "/images/products/product_1775203609.jpg",
+  "isActive": true,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-08T12:07:11.857Z"
+  },
+  "status": ""
+},
+{
+  "_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "name": "Cashier",
+  "email": "cashier@local",
+  "password": "$2a$10$iUCLhFIWJ90eetR0BfWNouJFDHjXMMfECLnfpUhr7GOi3fKtolr2m",
+  "role": "cashier",
+  "phone": "",
+  "photoUrl": "/images/products/product_1775312008.jpeg",
+  "isActive": false,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:13:30.223Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69cf74ea47420f0745b95a02"
+  },
+  "name": "Owner",
+  "email": "owner@local",
+  "password": "$2a$10$8VxC1Jk5AesOiPx/fzQ9TeN59BXFEoH11BObA23OWMQqjMNWpQotu",
+  "role": "owner",
+  "phone": "",
+  "photoUrl": "/images/products/product_1775312021.jpeg",
+  "isActive": false,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "updatedAt": {
+    "$date": "2026-04-04T14:13:42.008Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d24b43c7622a65b5ece507"
+  },
+  "name": "Kumis",
+  "email": "kumis@gmail.com",
+  "password": "$2a$10$tJeqygn6GHVzORClNVg3W.zJrKcL760nBSPV3cb8NFq2IN.CA/KIK",
+  "role": "barber",
+  "phone": "0898676312",
+  "photoUrl": "/images/products/product_1775389517.jpeg",
+  "isActive": true,
+  "status": "idle",
+  "createdAt": {
+    "$date": "2026-04-05T11:45:07.800Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:45:18.667Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d24b77c7622a65b5ece508"
+  },
+  "name": "Qindow",
+  "email": "123@gmail.com",
+  "password": "$2a$10$bHYM4O55EWBsiL9XzIUU.u/81mUcYQzACo6TGwA6NEiICKslg9zsu",
+  "role": "barber",
+  "phone": "1231242343",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "idle",
+  "createdAt": {
+    "$date": "2026-04-05T11:45:59.503Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-05T11:45:59.503Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d347ba48f9588afa9907a2"
+  },
+  "name": "Cipa",
+  "email": "cipa@local",
+  "password": "$2a$10$OjcgNH/ACGd/bo32DCBQ9uiTdgn6CD2FqCisDKCpaYT/zuzq3BtJ.",
+  "role": "barber",
+  "phone": "0987654321",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "idle",
+  "createdAt": {
+    "$date": "2026-04-06T05:42:18.279Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-06T05:42:18.279Z"
+  }
+}]
