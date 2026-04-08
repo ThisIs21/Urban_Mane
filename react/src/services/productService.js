@@ -21,6 +21,11 @@ const deleteProduct = async (id) => {
   await api.delete(`/products/${id}`);
 };
 
+const updateStock = async (id, quantity, type = 'set') => {
+  const response = await api.put(`/products/${id}/stock`, { quantity, type, date: new Date().toISOString() });
+  return response.data.data;
+};
+
 const uploadFile = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -52,6 +57,7 @@ export default {
   createProduct,
   updateProduct,
   deleteProduct,
+  updateStock,
   uploadFile,
   getImageUrl,
 };

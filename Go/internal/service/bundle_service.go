@@ -12,6 +12,7 @@ type BundleService interface {
 	GetBundleByID(id string) (*model.Bundle, error)
 	CreateBundle(input model.BundleInput) (*model.Bundle, error)
 	UpdateBundle(id string, input model.BundleInput) (*model.Bundle, error)
+	UpdateStock(id string, quantity int, operationType string) (*model.Bundle, error)
 	DeleteBundle(id string) error
 }
 
@@ -107,3 +108,28 @@ func (s *bundleService) DeleteBundle(id string) error {
 	return repository.DeleteBundle(id)
 }
 
+func (s *bundleService) UpdateStock(id string, quantity int, operationType string) (*model.Bundle, error) {
+	bundle, err := repository.GetBundleByID(id)
+	if err != nil {
+		return nil, errors.New("bundle tidak ditemukan")
+	}
+
+	switch operationType {
+	case "add":
+		bundle.Stock += quantity
+	case "subtract":
+		if bundle.Stock < quantity {
+			return nil, errors.New("stok bundle tidak cukup")
+		}
+		bundle.Stock -= quantity
+	default: // "set" atau kosong
+		bundle.Stock = quantity
+	}
+
+	updatedBundle, err := repository.UpdateBundle(id, *bundle)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedBundle, nil
+}

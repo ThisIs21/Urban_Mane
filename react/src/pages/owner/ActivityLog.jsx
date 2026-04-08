@@ -22,7 +22,7 @@ const ActivityLog = () => {
   }, []);
 
   const getActionBadge = (action) => {
-    switch(action) {
+    switch (action) {
       case 'CREATE': return { text: 'CREATE', color: 'safe' };
       case 'DELETE': return { text: 'DELETE', color: 'danger' };
       case 'UPDATE': return { text: 'UPDATE', color: 'warning' };
@@ -32,8 +32,8 @@ const ActivityLog = () => {
   };
 
   const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleString('id-ID', { 
-        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    return new Date(dateStr).toLocaleString('id-ID', {
+      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
   };
 

@@ -610,12 +610,10 @@ const Transaction = () => {
           setLoading(false);
           return alert("Untuk Service/Paket, Barber wajib dipilih!");
         }
-        // ✨ EXPAND BUNDLE: Convert bundle items to products + services
-        const expandedItems = expandBundleToItems();
-        console.log('[DEBUG] Expanded items for order:', expandedItems);
+        const mappedItems = cart.map(i => ({ itemId: i.id, quantity: i.quantity, type: i.type }));
         await orderService.createOrder({
           customerName, barberId: selectedBarber,
-          items: expandedItems,  // Use expanded items instead of raw cart
+          items: mappedItems,
         });
         alert("Order berhasil dibuat!");
         setCart([]); setCustomerName(""); setSelectedBarber(""); setDiscountPercent(0); setPayAmount(0);
@@ -688,12 +686,10 @@ const Transaction = () => {
     if (payAmount < grandTotal) return alert("Uang kurang!");
     try {
       setLoading(true);
-      // ✨ EXPAND BUNDLE: Convert bundle items to products + services
-      const expandedItems = expandBundleToItems();
-      console.log('[DEBUG] Expanded items for transaction:', expandedItems);
+      const mappedItems = cart.map(i => ({ itemId: i.id, quantity: i.quantity, type: i.type }));
       const transactionData = await transactionService.createTransaction({
         customerName,
-        items: expandedItems,  // Use expanded items instead of raw cart
+        items: mappedItems,
         discount: discountAmount, 
         payAmount, 
         paymentMethod: "cash",

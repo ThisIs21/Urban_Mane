@@ -152,9 +152,7 @@ func (s *userService) UpdateUser(userID string, input model.UpdateUserInput) (*m
 	if input.Phone != "" {
 		updatedData.Phone = input.Phone
 	}
-	if input.Role != "" {
-		updatedData.Role = input.Role
-	}
+	// Role tidak bisa diedit setelah user dibuat
 	if input.PhotoUrl != "" {
 		updatedData.PhotoUrl = input.PhotoUrl
 	}

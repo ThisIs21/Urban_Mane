@@ -9,7 +9,6 @@ import OwnerLayout from "./components/layout/OwnerLayout/OwnerLayout";
 // Import Pages
 import Login from "./pages/Login";
 
-
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
 import Users from "./pages/admin/Users";
@@ -29,16 +28,21 @@ import OwnerProducts from "./pages/owner/Products";
 import Reports from "./pages/owner/Reports";
 import ActivityLog from "./pages/owner/ActivityLog";
 
+// Smooth Loading Component
+const SmoothLoading = () => (
+  <div className="flex h-screen items-center justify-center text-white p-4">
+    <div className="text-center">
+      <div className="spinner mx-auto mb-4"></div>
+      <p className="text-sm opacity-75">Memuat...</p>
+    </div>
+  </div>
+);
+
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
-  if (loading)
-    return (
-      <div className="flex h-screen items-center justify-center text-white">
-        Loading...
-      </div>
-    );
+  if (loading) return <SmoothLoading />;
   if (!user) return <Navigate to="/login" replace />;
 
   // Cek Role
@@ -48,7 +52,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to={defaultPath} replace />;
   }
 
-  return children;
+  return <div className="page-fade-in">{children}</div>;
 };
 
 function App() {

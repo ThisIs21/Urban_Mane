@@ -42,14 +42,14 @@ func (s *orderService) CreateOrder(input model.CreateOrderInput) (*model.Order, 
 		// 1. Cek Data & Stok
 		if v.Type == "product" {
 			if v.ItemID == "" {
-				return nil, errors.New(fmt.Sprintf("product itemId cannot be empty"))
+				return nil, fmt.Errorf("product itemId cannot be empty")
 			}
 			product, err := repository.FindProductByID(v.ItemID)
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("product not found: itemId=%s", v.ItemID))
+				return nil, fmt.Errorf("product not found: itemId=%s", v.ItemID)
 			}
 			if product == nil {
-				return nil, errors.New(fmt.Sprintf("product is nil: itemId=%s", v.ItemID))
+				return nil, fmt.Errorf("product is nil: itemId=%s", v.ItemID)
 			}
 			if product.Stock < v.Quantity {
 				return nil, errors.New("stok habis untuk: " + product.Name)
@@ -63,19 +63,50 @@ func (s *orderService) CreateOrder(input model.CreateOrderInput) (*model.Order, 
 
 		} else if v.Type == "service" {
 			if v.ItemID == "" {
-				return nil, errors.New(fmt.Sprintf("service itemId cannot be empty"))
+				return nil, fmt.Errorf("service itemId cannot be empty")
 			}
 			service, err := repository.FindServiceByID(v.ItemID)
 			if err != nil {
-				return nil, errors.New(fmt.Sprintf("service not found: itemId=%s", v.ItemID))
+				return nil, fmt.Errorf("service not found: itemId=%s", v.ItemID)
 			}
 			if service == nil {
-				return nil, errors.New(fmt.Sprintf("service is nil: itemId=%s", v.ItemID))
+				return nil, fmt.Errorf("service is nil: itemId=%s", v.ItemID)
 			}
 			itemName = service.Name
 			itemPrice = service.Price
+		} else if v.Type == "bundle" {
+			if v.ItemID == "" {
+				return nil, fmt.Errorf("bundle itemId cannot be empty")
+			}
+			bundle, err := repository.GetBundleByID(v.ItemID)
+			if err != nil {
+				return nil, fmt.Errorf("bundle not found: itemId=%s", v.ItemID)
+			}
+			if bundle == nil {
+				return nil, fmt.Errorf("bundle is nil: itemId=%s", v.ItemID)
+			}
+			
+			if bundle.Stock < v.Quantity {
+				return nil, errors.New("stok paket bundle habis: " + bundle.Name)
+			}
+			
+			itemName = bundle.Name
+			itemPrice = bundle.BundlePrice
+
+			// Kurangi stok untuk tiap produk di dalam bundle
+			for _, prod := range bundle.Products {
+				totalQtyToDeduct := prod.Quantity * v.Quantity
+				
+				productInfo, pErr := repository.FindProductByID(prod.ProductID.Hex())
+				if pErr == nil && productInfo != nil && productInfo.Stock < totalQtyToDeduct {
+					return nil, errors.New("stok produk " + productInfo.Name + " dalam bundle tidak cukup")
+				}
+				repository.UpdateProductStock(prod.ProductID, totalQtyToDeduct)
+			}
+			
+			// Kurangi stok dari bundlenya sendiri
+			repository.DeductBundleStock(v.ItemID, v.Quantity)
 		} else {
-			// Handle Bundle logic here...
 			return nil, errors.New("invalid item type")
 		}
 
@@ -259,6 +290,19 @@ func (s *orderService) CancelOrder(orderID string) error {
 			err := repository.AddProductStock(item.ItemID, item.Quantity)
 			if err != nil {
 				fmt.Println("Gagal kembalikan stok item:", item.Name)
+			}
+		} else if item.Type == "bundle" {
+			// Restore bundle's own stock
+			err := repository.RestoreBundleStock(item.ItemID.Hex(), item.Quantity)
+			if err != nil {
+				fmt.Println("Gagal kembalikan stok bundle:", item.Name)
+			}
+			// Get bundle to restore its product stocks
+			bundle, bErr := repository.GetBundleByID(item.ItemID.Hex())
+			if bErr == nil && bundle != nil {
+				for _, prod := range bundle.Products {
+					repository.AddProductStock(prod.ProductID, prod.Quantity * item.Quantity)
+				}
 			}
 		}
 	}

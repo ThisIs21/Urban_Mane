@@ -79,3 +79,35 @@ func (c *BundleController) DeleteBundle(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Bundle deleted successfully"})
 }
+
+func (c *BundleController) UpdateStock(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	var input struct {
+		Quantity int    `json:"quantity" binding:"required"`
+		Type     string `json:"type"` // "add", "subtract", "set"
+		Date     string `json:"date"`
+	}
+
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Validasi sederhana
+	if input.Quantity < 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "quantity tidak boleh negatif"})
+		return
+	}
+
+	result, err := c.service.UpdateStock(id, input.Quantity, input.Type)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Stok bundle berhasil diupdate",
+		"data":    result,
+	})
+}

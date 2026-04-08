@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import productService from '../../services/productService';
 import Modal from '../../components/shared/Modal';
-import { adminTableCss } from './adminTableStyles';
+import { adminTableCss } from './AdminTableStyles';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -11,9 +11,13 @@ const Products = () => {
   const [statusFilter, setStatusFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [stockModalOpen, setStockModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [stockProduct, setStockProduct] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [stockAction, setStockAction] = useState('add'); // 'add' or 'remove'
+  const [stockQuantity, setStockQuantity] = useState('');
 
   const [formData, setFormData] = useState({
     name: '', description: '', price: '', stock: '', category: '', image: '', isActive: true
@@ -22,13 +26,13 @@ const Products = () => {
   const CATEGORIES = ['Hair Care', 'Beard Care', 'Styling'];
   const formatRp = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try { setLoading(true); setProducts((await productService.getAllProducts(search)) || []); }
     catch (err) { console.error(err); }
     finally { setLoading(false); }
-  };
+  }, [search]);
 
-  useEffect(() => { fetchProducts(); }, [search]);
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
   const filtered = products.filter(p => {
     const cat = !categoryFilter || p.category === categoryFilter;
@@ -70,6 +74,36 @@ const Products = () => {
     if (!deleteTarget) return;
     try { await productService.deleteProduct(deleteTarget.id); setDeleteOpen(false); setDeleteTarget(null); fetchProducts(); }
     catch { alert('Gagal menghapus produk'); }
+  };
+
+  const openStockModal = (product) => {
+    setStockProduct(product);
+    setStockAction('add');
+    setStockQuantity('');
+    setStockModalOpen(true);
+  };
+
+  const handleStockUpdate = async (e) => {
+    e.preventDefault();
+    if (!stockProduct || !stockQuantity) return;
+    try {
+      const quantity = parseInt(stockQuantity);
+      if (stockAction === 'remove' && quantity > stockProduct.stock) {
+        alert('Stok pengurangan tidak boleh melebihi stok saat ini');
+        return;
+      }
+      const newStock = stockAction === 'add' 
+        ? stockProduct.stock + quantity 
+        : stockProduct.stock - quantity;
+      await productService.updateStock(stockProduct.id, newStock, 'set');
+      setStockModalOpen(false);
+      setStockProduct(null);
+      setStockQuantity('');
+      fetchProducts();
+      alert('Stok berhasil diperbarui');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Gagal memperbarui stok');
+    }
   };
 
   const set = (k, v) => setFormData(prev => ({...prev, [k]:v}));
@@ -143,6 +177,7 @@ const Products = () => {
                     <td className="adm-td-center">
                       <div className="adm-action-cell">
                         <button className="adm-btn-edit" onClick={()=>openEdit(p)}>Edit</button>
+                        <button className="adm-btn-stock" onClick={()=>openStockModal(p)} style={{backgroundColor:'#3B82F6',color:'white',padding:'6px 12px',borderRadius:'6px',border:'none',cursor:'pointer',fontSize:'11px',fontWeight:'600',marginLeft:'4px'}}>Stok</button>
                         <button className="adm-btn-delete" onClick={()=>{setDeleteTarget(p);setDeleteOpen(true);}}>Hapus</button>
                       </div>
                     </td>
@@ -195,6 +230,36 @@ const Products = () => {
             <div className="adm-modal-footer">
               <button type="button" className="adm-modal-cancel" onClick={()=>setIsModalOpen(false)}>Batal</button>
               <button type="submit" className="adm-modal-save">Simpan</button>
+            </div>
+          </form>
+        </Modal>
+
+        {/* Stock Management Modal */}
+        <Modal isOpen={stockModalOpen} onClose={()=>setStockModalOpen(false)} title={`Kelola Stok - ${stockProduct?.name}`}>
+          <form onSubmit={handleStockUpdate}>
+            <div className="adm-modal-body">
+              <div style={{marginBottom:'20px',padding:'12px',backgroundColor:'#F3F4F6',borderRadius:'8px'}}>
+                <p style={{fontSize:'14px',color:'#666',margin:'0 0 4px 0'}}>Stok Saat Ini</p>
+                <p style={{fontSize:'24px',fontWeight:'700',color:'#1F2937',margin:'0'}}>{stockProduct?.stock || 0} pcs</p>
+              </div>
+              <div style={{marginBottom:'20px'}}>
+                <label style={{display:'block',marginBottom:'8px',fontSize:'14px',fontWeight:'600',color:'#333'}}>Aksi</label>
+                <div style={{display:'flex',gap:'8px'}}>
+                  <button type="button" onClick={()=>setStockAction('add')} style={{flex:1,padding:'10px',borderRadius:'6px',border:stockAction==='add'?'2px solid #3B82F6':'1px solid #D1D5DB',backgroundColor:stockAction==='add'?'#EFF6FF':'white',color:stockAction==='add'?'#3B82F6':'#666',fontWeight:'600',cursor:'pointer'}}>➕ Tambah Stok</button>
+                  <button type="button" onClick={()=>setStockAction('remove')} style={{flex:1,padding:'10px',borderRadius:'6px',border:stockAction==='remove'?'2px solid #EF4444':'1px solid #D1D5DB',backgroundColor:stockAction==='remove'?'#FEF2F2':'white',color:stockAction==='remove'?'#EF4444':'#666',fontWeight:'600',cursor:'pointer'}}>➖ Kurangi Stok</button>
+                </div>
+              </div>
+              <div className="adm-field">
+                <label className="adm-field-label">Jumlah {stockAction==='add'?'Tambahan':'Pengurangan'}</label>
+                <input className="adm-field-input" type="number" required value={stockQuantity} onChange={e=>setStockQuantity(e.target.value)} placeholder="0" min="1" max={stockAction==='remove'?stockProduct?.stock:9999} />
+              </div>
+              <div style={{marginTop:'20px',padding:'12px',backgroundColor:'#F0FDF4',borderRadius:'8px',borderLeft:'4px solid #10B981'}}>
+                <p style={{fontSize:'13px',color:'#065F46',margin:'0'}}>Stok baru: <strong>{stockAction==='add'?parseInt(stockQuantity||0)+parseInt(stockProduct?.stock||0):parseInt(stockProduct?.stock||0)-parseInt(stockQuantity||0)}</strong> pcs</p>
+              </div>
+            </div>
+            <div className="adm-modal-footer">
+              <button type="button" className="adm-modal-cancel" onClick={()=>setStockModalOpen(false)}>Batal</button>
+              <button type="submit" className="adm-modal-save">Perbarui Stok</button>
             </div>
           </form>
         </Modal>

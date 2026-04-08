@@ -62,10 +62,17 @@ export const adminTableCss = `
     letter-spacing: 0.03em;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    transition: background 0.18s;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
-  .adm-add-btn:hover { background: var(--gold-light); }
+  .adm-add-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(201, 168, 76, 0.3);
+  }
+  .adm-add-btn:active {
+    transform: translateY(0);
+  }
 
   /* ── FILTER BAR ── */
   .adm-filter-bar {
@@ -85,9 +92,13 @@ export const adminTableCss = `
     font-size: 13px;
     font-family: 'DM Sans', sans-serif;
     outline: none;
-    transition: border-color 0.18s;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-search:focus { border-color: var(--gold-line); }
+  .adm-search:focus {
+    border-color: var(--gold-line);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.1);
+    transform: scale(1.01);
+  }
   .adm-search::placeholder { color: var(--t3); }
 
   .adm-select {
@@ -100,10 +111,14 @@ export const adminTableCss = `
     font-family: 'DM Sans', sans-serif;
     outline: none;
     cursor: pointer;
-    transition: border-color 0.18s;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     color-scheme: dark;
   }
-  .adm-select:focus { border-color: var(--gold-line); }
+  .adm-select:focus {
+    border-color: var(--gold-line);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.1);
+    transform: scale(1.01);
+  }
   .adm-select option { background: #232220; }
 
   /* ── TABLE PANEL ── */
@@ -146,10 +161,13 @@ export const adminTableCss = `
   .adm-table th.center { text-align: center; }
   .adm-table tbody tr {
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    transition: background 0.15s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .adm-table tbody tr:last-child { border-bottom: none; }
-  .adm-table tbody tr:hover { background: var(--s3); }
+  .adm-table tbody tr:hover {
+    background: var(--s3);
+    transform: translateX(2px);
+  }
   .adm-table td { padding: 13px 16px; color: var(--t2); vertical-align: middle; }
 
   /* Thumb */
@@ -204,9 +222,16 @@ export const adminTableCss = `
     font-weight: 600;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-btn-edit:hover { background: rgba(201,168,76,0.2); }
+  .adm-btn-edit:hover {
+    background: rgba(201,168,76,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
+  }
+  .adm-btn-edit:active {
+    transform: translateY(0);
+  }
   .adm-btn-delete {
     padding: 5px 12px;
     border-radius: 6px;
@@ -217,9 +242,16 @@ export const adminTableCss = `
     font-weight: 600;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-btn-delete:hover { background: rgba(224,82,82,0.15); }
+  .adm-btn-delete:hover {
+    background: rgba(224,82,82,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(224, 82, 82, 0.2);
+  }
+  .adm-btn-delete:active {
+    transform: translateY(0);
+  }
 
   /* Empty & loading */
   .adm-empty { padding: 60px 20px; text-align: center; color: var(--t3); font-size: 13px; }
@@ -243,10 +275,14 @@ export const adminTableCss = `
     font-size: 13px;
     font-family: 'DM Sans', sans-serif;
     outline: none;
-    transition: border-color 0.18s;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     color-scheme: dark;
   }
-  .adm-field-input:focus { border-color: var(--gold-line); }
+  .adm-field-input:focus {
+    border-color: var(--gold-line);
+    box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.1);
+    transform: scale(1.005);
+  }
   .adm-field-input::placeholder { color: var(--t3); }
   .adm-field-input option { background: #232220; }
 
@@ -292,9 +328,12 @@ export const adminTableCss = `
     padding: 3px 9px;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    transition: background 0.15s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-item-remove:hover { background: rgba(224,82,82,0.15); }
+  .adm-item-remove:hover {
+    background: rgba(224,82,82,0.15);
+    transform: scale(1.05);
+  }
 
   .adm-add-row { display: flex; gap: 8px; align-items: center; }
   .adm-inline-add-btn {
@@ -307,10 +346,17 @@ export const adminTableCss = `
     font-weight: 700;
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
-    transition: background 0.15s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
   }
-  .adm-inline-add-btn:hover { background: rgba(201,168,76,0.2); }
+  .adm-inline-add-btn:hover {
+    background: rgba(201,168,76,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
+  }
+  .adm-inline-add-btn:active {
+    transform: translateY(0);
+  }
 
   /* Modal footer */
   .adm-modal-footer { display: flex; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
@@ -318,23 +364,47 @@ export const adminTableCss = `
     flex: 1; padding: 10px; border-radius: 8px;
     background: var(--s3); border: 1px solid var(--border);
     color: var(--t2); font-size: 13px; font-weight: 500;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-modal-cancel:hover { background: var(--s4); color: var(--t1); }
+  .adm-modal-cancel:hover {
+    background: var(--s4);
+    color: var(--t1);
+    transform: translateY(-2px);
+  }
+  .adm-modal-cancel:active {
+    transform: translateY(0);
+  }
   .adm-modal-save {
     flex: 1; padding: 10px; border-radius: 8px;
     background: var(--gold); border: none;
     color: #111; font-size: 13px; font-weight: 700;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-modal-save:hover { background: var(--gold-light); }
+  .adm-modal-save:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(201, 168, 76, 0.3);
+  }
+  .adm-modal-save:active {
+    transform: translateY(0);
+  }
   .adm-modal-delete-confirm {
     flex: 1; padding: 10px; border-radius: 8px;
     background: rgba(224,82,82,0.1); border: 1px solid rgba(224,82,82,0.25);
     color: #E05252; font-size: 13px; font-weight: 700;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .adm-modal-delete-confirm:hover { background: rgba(224,82,82,0.2); }
+  .adm-modal-delete-confirm:hover {
+    background: rgba(224,82,82,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(224, 82, 82, 0.2);
+  }
+  .adm-modal-delete-confirm:active {
+    transform: translateY(0);
+  }
 
   /* Delete modal */
   .adm-delete-msg { font-size: 14px; color: var(--t2); line-height: 1.6; margin-bottom: 4px; }

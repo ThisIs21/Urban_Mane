@@ -56,6 +56,7 @@ func RegisterRoutes(
 			products.POST("", productController.CreateProduct)
 			products.PUT("/:id", productController.UpdateProduct)
 			products.DELETE("/:id", productController.DeleteProduct)
+			products.PUT("/:id/stock", productController.UpdateStock)
 		}
 
 		// Upload endpoint untuk file
@@ -79,6 +80,7 @@ func RegisterRoutes(
 			bundles.POST("", bundleController.CreateBundle)
 			bundles.PUT("/:id", bundleController.UpdateBundle)
 			bundles.DELETE("/:id", bundleController.DeleteBundle)
+			bundles.PUT("/:id/stock", bundleController.UpdateStock)
 		}
 
 		

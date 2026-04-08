@@ -37,6 +37,11 @@ const deleteBundle = async (id) => {
   return response.data;
 };
 
+const updateStock = async (id, quantity, type = 'set') => {
+  const response = await api.put(`/bundles/${id}/stock`, { quantity, type, date: new Date().toISOString() });
+  return response.data.data;
+};
+
 // ========== IMAGE URL HELPER FUNCTION ==========
 const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
@@ -60,5 +65,6 @@ export default {
   createBundle,
   updateBundle,
   deleteBundle,
+  updateStock,
   getImageUrl,
 };

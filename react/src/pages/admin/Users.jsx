@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import userService from '../../services/userService';
 import Modal from '../../components/shared/Modal';
-import { adminTableCss } from './adminTableStyles';
+import { adminTableCss } from './AdminTableStyles';
 
 const ROLES = ['admin', 'owner', 'cashier', 'barber'];
 const roleCls = { admin:'role-admin', owner:'role-owner', cashier:'role-cashier', barber:'role-barber' };
@@ -21,12 +21,12 @@ const Users = () => {
 
   const [form, setForm] = useState({ name:'', email:'', password:'', role:'cashier', phone:'', isActive:true, photoUrl:'' });
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try { setLoading(true); setUsers((await userService.getAllUsers(search))||[]); }
     catch(err) { console.error(err); } finally { setLoading(false); }
-  };
+  }, [search]);
 
-  useEffect(() => { fetchUsers(); }, [search]);
+  useEffect(() => { fetchUsers(); }, [fetchUsers]);
   useEffect(() => {
     setFiltered(roleFilter ? users.filter(u=>u.role===roleFilter) : users);
   }, [users, roleFilter]);
@@ -147,12 +147,14 @@ const Users = () => {
                 <input className="adm-field-input" type="password" value={form.password} onChange={e=>set('password',e.target.value)} placeholder="••••••••"/>
               </div>
               <div className="adm-field-row">
-                <div className="adm-field">
-                  <label className="adm-field-label">Role</label>
-                  <select className="adm-field-input" value={form.role} onChange={e=>set('role',e.target.value)}>
-                    {ROLES.map(r=><option key={r} value={r}>{r.charAt(0).toUpperCase()+r.slice(1)}</option>)}
-                  </select>
-                </div>
+                {!currentUser && (
+                  <div className="adm-field">
+                    <label className="adm-field-label">Role</label>
+                    <select className="adm-field-input" value={form.role} onChange={e=>set('role',e.target.value)}>
+                      {ROLES.map(r=><option key={r} value={r}>{r.charAt(0).toUpperCase()+r.slice(1)}</option>)}
+                    </select>
+                  </div>
+                )}
                 <div className="adm-field"><label className="adm-field-label">Telepon</label><input className="adm-field-input" value={form.phone} onChange={e=>set('phone',e.target.value)} placeholder="08xx..."/></div>
               </div>
               <div className="adm-field">

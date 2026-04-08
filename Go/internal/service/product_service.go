@@ -2,6 +2,9 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"time"
+
 
 	"urban-mane/internal/model"
 	"urban-mane/internal/repository"
@@ -14,6 +17,7 @@ type ProductService interface {
 	UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
 	DeleteProduct(id string) error
 	DeductProductStock(productId string, quantity int) error
+	UpdateStock(id string, quantity int, operationType string) (*model.Product, error)
 }
 
 type productService struct{}
@@ -130,4 +134,36 @@ func (s *productService) DeductProductStock(productId string, quantity int) erro
 	LogActivity("UPDATE", "Product", productId, "Mengurangi stok: "+product.Name+" sebanyak "+intToString(quantity), "", "", "")
 
 	return nil
+}
+
+func (s *productService) UpdateStock(id string, quantity int, operationType string) (*model.Product, error) {
+    product, err := repository.FindProductByID(id)
+    if err != nil {
+        return nil, errors.New("produk tidak ditemukan")
+    }
+
+    switch operationType {
+    case "add":
+        product.Stock += quantity
+    case "subtract":
+        if product.Stock < quantity {
+            return nil, errors.New("stok tidak cukup")
+        }
+        product.Stock -= quantity
+    default: // "set" atau kosong
+        product.Stock = quantity
+    }
+
+    product.UpdatedAt = time.Now()
+
+    err = repository.UpdateProduct(id, *product)
+    if err != nil {
+        return nil, err
+    }
+
+    LogActivity("UPDATE", "Product", id, 
+        fmt.Sprintf("Update stok %s: %s → %d unit", operationType, product.Name, product.Stock), 
+        "", "", "")
+
+    return product, nil
 }

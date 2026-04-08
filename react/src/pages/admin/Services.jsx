@@ -1,11 +1,11 @@
 // ============================================================
 // Services.jsx
 // ============================================================
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import serviceService from '../../services/serviceService';
 import productService from '../../services/productService';
 import Modal from '../../components/shared/Modal';
-import { adminTableCss } from './adminTableStyles';
+import { adminTableCss } from './AdminTableStyles';
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -21,12 +21,12 @@ const Services = () => {
   const [form, setForm] = useState({ name:'', price:'', duration:'', category:'', image:'', requiredProducts:[], isActive:true });
   const formatRp = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
 
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     try { setLoading(true); setServices((await serviceService.getAllServices(search)) || []); }
     catch(err) { console.error(err); } finally { setLoading(false); }
-  };
+  }, [search]);
 
-  useEffect(() => { fetchServices(); }, [search]);
+  useEffect(() => { fetchServices(); }, [fetchServices]);
   useEffect(() => { productService.getAllProducts('').then(d=>setAllProducts(d||[])).catch(()=>{}); }, []);
 
   const openCreate = () => {

@@ -69,6 +69,27 @@ func (s *transactionService) CreateTransaction(input model.TransactionInput, cas
 			}
 			itemName = bundle.Name
 			itemPrice = bundle.BundlePrice
+
+			// Kurangi stok untuk tiap produk di dalam bundle
+			for _, prod := range bundle.Products {
+				totalQtyToDeduct := prod.Quantity * v.Quantity
+				
+				// Optional: Cek apakah stok produk di dalam bundle cukup
+				productInfo, pErr := s.productService.GetProductByID(prod.ProductID.Hex())
+				if pErr == nil && productInfo.Stock < totalQtyToDeduct {
+					return nil, errors.New("stok produk " + productInfo.Name + " dalam bundle tidak cukup")
+				}
+				
+				if err := repository.UpdateProductStock(prod.ProductID, totalQtyToDeduct); err != nil {
+					return nil, err
+				}
+			}
+
+			// Kurangi stok dari bundlenya sendiri (harus setelah cek stok mencukupi)
+			if bundle.Stock < v.Quantity {
+				return nil, errors.New("stok paket bundle habis: " + bundle.Name)
+			}
+			repository.DeductBundleStock(v.ItemID, v.Quantity)
 		} else {
 			return nil, errors.New("invalid item type")
 		}
