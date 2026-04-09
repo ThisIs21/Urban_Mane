@@ -70,39 +70,58 @@ func main() {
 	// Router
 	r := gin.Default()
 
-	// Tentukan path folder images - cari di parent directory
+	// CORS Middleware FIRST - sebelum semua route dan static files
+	r.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "false")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		
+		// Handle preflight requests
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(200)
+			return
+		}
+		
+		c.Next()
+	})
+
+	// Tentukan path folder images dengan lebih akurat
 	workDir, err := os.Getwd()
 	if err != nil {
-		log.Println("Error getting working directory:", err)
+		log.Println("Error getting working directory, using current dir")
 		workDir = "."
 	}
 
-	// Cari folder images dari project root
-	imagesPath := filepath.Join(workDir, "../images")
-	if _, err := os.Stat(imagesPath); err != nil {
-		// Jika tidak ketemu, coba dari current dir
-		imagesPath = filepath.Join(workDir, "images")
+	log.Println("Working directory:", workDir)
+
+	// Try multiple paths to find images folder
+	// Struktur: Urban_Mane/Go/cmd/api/ → images di Urban_Mane/images
+	var imagesPath string
+	potentialPaths := []string{
+		filepath.Join(workDir, "../../../images"),       // 3 level up from cmd/api
+		filepath.Join(workDir, "../../images"),          // 2 level up (fallback)
+		filepath.Join(workDir, "../images"),             // 1 level up (fallback)
+		filepath.Join(workDir, "images"),                // Current directory
+		"../../images",                                  // Relative path
 	}
 
-	// Pastikan folder images ada
-	if _, err := os.Stat(imagesPath); err == nil {
-		log.Println("Serving images from:", imagesPath)
+	for _, path := range potentialPaths {
+		absPath, _ := filepath.Abs(path)
+		if _, err := os.Stat(path); err == nil {
+			imagesPath = path
+			log.Println("✓ Found images folder at:", absPath)
+			break
+		}
+	}
+
+	if imagesPath != "" {
 		r.Static("/images", imagesPath)
 	} else {
-		log.Println("Images folder not found at:", imagesPath)
+		log.Println("⚠ Warning: Images folder not found in any expected location")
+		log.Println("Tried paths:", potentialPaths)
 	}
-
-	// CORS
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	})
 
 	// Register Routes
 	routes.RegisterRoutes(
