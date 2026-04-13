@@ -21,65 +21,6 @@
 },
 {
   "_id": {
-    "$oid": "69cf74ea47420f0745b95a01"
-  },
-  "name": "Cashier",
-  "email": "cashier@local",
-  "password": "$2a$10$iUCLhFIWJ90eetR0BfWNouJFDHjXMMfECLnfpUhr7GOi3fKtolr2m",
-  "role": "cashier",
-  "phone": "",
-  "photoUrl": "/images/products/product_1775312008.jpeg",
-  "isActive": false,
-  "createdAt": {
-    "$date": {
-      "$numberLong": "-62135596800000"
-    }
-  },
-  "updatedAt": {
-    "$date": "2026-04-04T14:13:30.223Z"
-  }
-},
-{
-  "_id": {
-    "$oid": "69cf74ea47420f0745b95a02"
-  },
-  "name": "Owner",
-  "email": "owner@local",
-  "password": "$2a$10$8VxC1Jk5AesOiPx/fzQ9TeN59BXFEoH11BObA23OWMQqjMNWpQotu",
-  "role": "owner",
-  "phone": "",
-  "photoUrl": "/images/products/product_1775312021.jpeg",
-  "isActive": false,
-  "createdAt": {
-    "$date": {
-      "$numberLong": "-62135596800000"
-    }
-  },
-  "updatedAt": {
-    "$date": "2026-04-04T14:13:42.008Z"
-  }
-},
-{
-  "_id": {
-    "$oid": "69d24b43c7622a65b5ece507"
-  },
-  "name": "Kumis",
-  "email": "kumis@gmail.com",
-  "password": "$2a$10$tJeqygn6GHVzORClNVg3W.zJrKcL760nBSPV3cb8NFq2IN.CA/KIK",
-  "role": "barber",
-  "phone": "0898676312",
-  "photoUrl": "/images/products/product_1775389517.jpeg",
-  "isActive": true,
-  "status": "idle",
-  "createdAt": {
-    "$date": "2026-04-05T11:45:07.800Z"
-  },
-  "updatedAt": {
-    "$date": "2026-04-05T11:45:18.667Z"
-  }
-},
-{
-  "_id": {
     "$oid": "69d24b77c7622a65b5ece508"
   },
   "name": "Qindow",
@@ -114,5 +55,81 @@
   },
   "updatedAt": {
     "$date": "2026-04-06T05:42:18.279Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcf9c66bafdc4c06f84752"
+  },
+  "name": "Alghifary",
+  "email": "algi@local",
+  "password": "$2a$10$LA/vTJ0rmRmD6VbTvmPCtOJei8FNUTIVTjU13MyzZdck2cykNWrmy",
+  "role": "owner",
+  "phone": "085165755485",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "",
+  "createdAt": {
+    "$date": "2026-04-13T14:12:22.460Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T14:12:22.460Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd05d43c737f34e0cab635"
+  },
+  "name": "Kumis",
+  "email": "kumis@local",
+  "password": "$2a$10$46SJzvOwlhVkeVm3QL9aO.c4YY7eLjSO2smRS4oiFVs22J0kOnIPO",
+  "role": "barber",
+  "phone": "025648421",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "",
+  "createdAt": {
+    "$date": "2026-04-13T15:03:48.454Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T15:03:48.454Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "name": "Gilang",
+  "email": "gilang@gmail.com",
+  "password": "$2a$10$xNrWonG6QD9ewESse4Oov.9FeNzkjp9g4IWJe3TDiyvAmuLDqzHOG",
+  "role": "cashier",
+  "phone": "0405640564",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "",
+  "createdAt": {
+    "$date": "2026-04-13T15:04:26.229Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T15:05:06.411Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd06133c737f34e0cab639"
+  },
+  "name": "Ahong",
+  "email": "ahong@gmail.com",
+  "password": "$2a$10$FuBA60Vc/N38/4HRTtyGNO9mNL8M7azpfk74uHlj1mpnW8VFfQIMC",
+  "role": "owner",
+  "phone": "05454812",
+  "photoUrl": "",
+  "isActive": true,
+  "status": "",
+  "createdAt": {
+    "$date": "2026-04-13T15:04:51.072Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T16:02:32.969Z"
   }
 }]
