@@ -20,22 +20,21 @@ func InitProductCollection() {
 }
 
 func CreateProduct(product model.Product) (*model.Product, error) {
-	product.ID = bson.NewObjectID()
-	product.CreatedAt = time.Now()
-	product.UpdatedAt = time.Now()
+    product.ID = bson.NewObjectID()
+    product.CreatedAt = time.Now()
+    product.UpdatedAt = time.Now()
 
-	// Set default IsActive jika kosong
-	if product.IsActive == false { // Perhatikan logika ini, mungkin lebih baik di service
-		// biarkan service yang handle default
-	}
+    // Default IsActive = true jika belum di-set
+    if !product.IsActive {
+        product.IsActive = true
+    }
 
-	_, err := productCollection.InsertOne(context.TODO(), product)
-	if err != nil {
-		return nil, err
-	}
-	return &product, nil
+    _, err := productCollection.InsertOne(context.TODO(), product)
+    if err != nil {
+        return nil, err
+    }
+    return &product, nil
 }
-
 func GetAllProducts(search string) ([]model.Product, error) {
 	var products []model.Product
 
@@ -183,3 +182,24 @@ func CountActiveProducts() (int64, error) {
     return productCollection.CountDocuments(context.TODO(), bson.M{"isActive": true})
 }
 
+// Digunakan saat Admin nambah stok
+func RestockProduct(id bson.ObjectID, additionalStock int) error {
+    update := bson.M{
+        "$inc": bson.M{"stock": additionalStock},
+        "$set": bson.M{"lastRestockAt": time.Now()},
+    }
+    _, err := productCollection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
+    return err
+}
+
+// Digunakan di Transaction Service saat sukses
+func UpdateProductAnalytics(id bson.ObjectID, qty int, revenue int) {
+    update := bson.M{
+        "$inc": bson.M{
+            "stock":        -qty,
+            "totalSold":    qty,
+            "totalRevenue": revenue,
+        },
+    }
+    productCollection.UpdateOne(context.TODO(), bson.M{"_id": id}, update)
+}
