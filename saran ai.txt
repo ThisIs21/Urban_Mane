@@ -1,9 +1,0 @@
-PRODUCTS
-
-Image Upload - Tambahkan fitur upload gambar untuk produk dan layanan (lebih menarik untuk katalog)
-Category Management - Buat halaman terpisah untuk CRUD kategori, agar admin bisa menambah kategori baru
-Bulk Actions - Checkbox untuk memilih multiple items, lalu delete/activate semua sekaligus
-Export/Import - Fitur export ke Excel dan import dari CSV untuk memudahkan input data massal
-Price History - Log perubahan harga untuk tracking
-Low Stock Alert - Notifikasi otomatis saat stok di bawah threshold
-

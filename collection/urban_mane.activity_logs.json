@@ -1000,4 +1000,327 @@
   "created_at": {
     "$date": "2026-04-08T16:22:08.845Z"
   }
+},
+{
+  "_id": {
+    "$oid": "69d687e930432ddaf38e0038"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Order",
+  "entity_id": "69d687e930432ddaf38e0037",
+  "details": "Membuat order ORD-1775667177851803400 untuk Alghifary dengan services: Beard Oil x1, Hair Tonic x1, Haircut x1, Beard Trimming x1, Premium Care Bundle x1, ",
+  "created_at": {
+    "$date": "2026-04-08T16:52:57.854Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d687f030432ddaf38e0039"
+  },
+  "user_id": {
+    "$oid": "69d24b77c7622a65b5ece508"
+  },
+  "user_name": "Qindow",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69d687e930432ddaf38e0037",
+  "details": "Barber Qindow mulai mengerjakan order ORD-1775667177851803400",
+  "created_at": {
+    "$date": "2026-04-08T16:53:04.104Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d687f830432ddaf38e003a"
+  },
+  "user_id": {
+    "$oid": "69d24b77c7622a65b5ece508"
+  },
+  "user_name": "Qindow",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69d687e930432ddaf38e0037",
+  "details": "Barber Qindow selesai mengerjakan order ORD-1775667177851803400",
+  "created_at": {
+    "$date": "2026-04-08T16:53:12.728Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d6880230432ddaf38e003b"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "cashier",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69d687e930432ddaf38e0037",
+  "details": "Pembayaran order ORD-1775667177851803400 selesai dengan metode cash",
+  "created_at": {
+    "$date": "2026-04-08T16:53:22.809Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcf9c66bafdc4c06f84753"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "User",
+  "entity_id": "69dcf9c66bafdc4c06f84752",
+  "details": "Membuat user baru: Alghifary (owner)",
+  "created_at": {
+    "$date": "2026-04-13T14:12:22.474Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcf9e76bafdc4c06f84754"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "DELETE",
+  "entity": "Product",
+  "entity_id": "69cf76208ffcf1d2756b5b58",
+  "details": "Menghapus produk: Beard Oil",
+  "created_at": {
+    "$date": "2026-04-13T14:12:55.733Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcfa856bafdc4c06f84755"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "000000000000000000000000",
+  "details": "Membuat produk baru: Hair Color dengan harga 15000",
+  "created_at": {
+    "$date": "2026-04-13T14:15:33.330Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcfb18c7bb27be440394b3"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "000000000000000000000000",
+  "details": "Membuat produk baru: Hair Color dengan harga 15000",
+  "created_at": {
+    "$date": "2026-04-13T14:18:00.664Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcfb83c7bb27be440394b5"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "000000000000000000000000",
+  "details": "Membuat produk baru: qweqwe dengan harga 12312",
+  "created_at": {
+    "$date": "2026-04-13T14:19:47.334Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcfec101a0d96f897dd6e8"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "69dcfec101a0d96f897dd6e7",
+  "details": "Membuat produk baru: Hair Color dengan harga 15000",
+  "created_at": {
+    "$date": "2026-04-13T14:33:37.984Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd04ba3c737f34e0cab632"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "DELETE",
+  "entity": "User",
+  "entity_id": "69cf74ea47420f0745b95a01",
+  "details": "Menghapus user: Cashier",
+  "created_at": {
+    "$date": "2026-04-13T14:59:06.402Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd04bd3c737f34e0cab633"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "DELETE",
+  "entity": "User",
+  "entity_id": "69cf74ea47420f0745b95a02",
+  "details": "Menghapus user: Owner",
+  "created_at": {
+    "$date": "2026-04-13T14:59:09.004Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd04bf3c737f34e0cab634"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "DELETE",
+  "entity": "User",
+  "entity_id": "69d24b43c7622a65b5ece507",
+  "details": "Menghapus user: Kumis",
+  "created_at": {
+    "$date": "2026-04-13T14:59:11.507Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd05d43c737f34e0cab636"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "User",
+  "entity_id": "69dd05d43c737f34e0cab635",
+  "details": "Membuat user baru: Kumis (barber)",
+  "created_at": {
+    "$date": "2026-04-13T15:03:48.455Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd05fa3c737f34e0cab638"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "User",
+  "entity_id": "69dd05fa3c737f34e0cab637",
+  "details": "Membuat user baru: Gilang (cashier)",
+  "created_at": {
+    "$date": "2026-04-13T15:04:26.230Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd06133c737f34e0cab63a"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "User",
+  "entity_id": "69dd06133c737f34e0cab639",
+  "details": "Membuat user baru: Ahong (owner)",
+  "created_at": {
+    "$date": "2026-04-13T15:04:51.073Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd061d3c737f34e0cab63b"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "User",
+  "entity_id": "69dd05fa3c737f34e0cab637",
+  "details": "Mengubah data user: Gilang",
+  "created_at": {
+    "$date": "2026-04-13T15:05:01.673Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd06223c737f34e0cab63c"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "User",
+  "entity_id": "69dd05fa3c737f34e0cab637",
+  "details": "Mengubah data user: Gilang",
+  "created_at": {
+    "$date": "2026-04-13T15:05:06.413Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd1399e9bbd9300338433e"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "User",
+  "entity_id": "69dd06133c737f34e0cab639",
+  "details": "Mengubah data user: Ahong",
+  "created_at": {
+    "$date": "2026-04-13T16:02:33.054Z"
+  }
 }]
