@@ -31,26 +31,40 @@ func NewProductService() ProductService {
 }
 
 func (s *productService) CreateProduct(input model.ProductInput) (*model.Product, error) {
+	if input.Name == "" {
+        return nil, errors.New("nama produk wajib diisi")
+    }
+    if input.Price <= 0 {
+        return nil, errors.New("harga harus lebih besar dari 0")
+	}
 	newProduct := model.Product{
-		Name:        input.Name,
-		Description: input.Description,
-		Price:       input.Price,
-		Stock:       input.Stock,
-		Category:    input.Category,
-		Image:       input.Image,
-		IsActive:    true,
-	}
-
+        Name:        input.Name,
+        Description: input.Description,
+        Price:       input.Price,
+        Stock:       input.Stock,
+        Category:    input.Category,
+        Image:       input.Image,
+        IsActive:    true,
+        CreatedAt:   time.Now(),
+        UpdatedAt:   time.Now(),
+    }
 	if input.IsActive != nil {
-		newProduct.IsActive = *input.IsActive
-	}
+        newProduct.IsActive = *input.IsActive
+    }
 
-	// Log activity (SYNC - not in goroutine)
-	LogActivity("CREATE", "Product", newProduct.ID.Hex(), "Membuat produk baru: "+newProduct.Name+" dengan harga "+intToString(newProduct.Price), "", "", "")
+    // Simpan ke database melalui repository
+    createdProduct, err := repository.CreateProduct(newProduct)
+    if err != nil {
+        return nil, err
+    }
 
-	return &newProduct, nil
+    // Log activity
+    LogActivity("CREATE", "Product", createdProduct.ID.Hex(), 
+        "Membuat produk baru: "+createdProduct.Name+" dengan harga "+fmt.Sprintf("%d", createdProduct.Price), 
+        "", "", "")
+
+    return createdProduct, nil
 }
-
 func (s *productService) GetAllProducts(search string) ([]model.Product, error) {
 	products, err := repository.GetAllProducts(search)
 	if err != nil {
