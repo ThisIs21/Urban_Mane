@@ -36,6 +36,32 @@ func (s *transactionService) CreateTransaction(input model.TransactionInput, cas
 	var items []model.TransactionItem
 	var totalPrice int = 0
 
+
+	// Key: ServiceID (string), Value: bool
+    selectedServices := make(map[string]bool)
+
+    for _, v := range input.Items {
+        // --- VALIDASI DUPLIKAT ---
+        if v.Type == "service" {
+            if selectedServices[v.ItemID] {
+                return nil, errors.New("service ini sudah dipilih, tidak boleh lebih dari 1")
+            }
+            selectedServices[v.ItemID] = true
+        } else if v.Type == "bundle" {
+            bundle, err := s.bundleService.GetBundleByID(v.ItemID)
+            if err != nil {
+                return nil, errors.New("bundle tidak ditemukan")
+            }
+            // Cek setiap service di dalam bundle
+            for _, bSvc := range bundle.Services {
+                svcID := bSvc.ServiceID.Hex()
+                if selectedServices[svcID] {
+                    return nil, errors.New("salah satu service dalam bundle '" + bundle.Name + "' sudah ada di list transaksi")
+                }
+                selectedServices[svcID] = true
+            }
+        }
+
 	// Validasi & Kalkulasi Item
 	for _, v := range input.Items {
 		var itemName string
@@ -107,6 +133,7 @@ func (s *transactionService) CreateTransaction(input model.TransactionInput, cas
 			Type:     v.Type,
 		})
 	}
+}
 
 	// Kalkulasi Total
 	grandTotal := totalPrice - input.Discount

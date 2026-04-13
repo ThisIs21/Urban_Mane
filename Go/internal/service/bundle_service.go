@@ -41,11 +41,15 @@ func (s *bundleService) GetBundleByID(id string) (*model.Bundle, error) {
 
 func (s *bundleService) CreateBundle(input model.BundleInput) (*model.Bundle, error) {
 	if input.BundlePrice <= 0 {
-		return nil, errors.New("bundle price must be greater than 0")
+		return nil, errors.New("harga bundle harus lebih dari 0")
+	}
+	if input.Stock < 0 {
+		return nil, errors.New("stok tidak boleh negatif")
 	}
 
-	if input.Stock < 0 {
-		return nil, errors.New("stock cannot be negative")
+	// Validasi: Harus ada minimal 1 produk ATAU 1 service
+	if len(input.Products) == 0 && len(input.Services) == 0 {
+		return nil, errors.New("bundle harus memiliki minimal 1 produk atau 1 layanan")
 	}
 
 	isActive := true
@@ -68,16 +72,16 @@ func (s *bundleService) CreateBundle(input model.BundleInput) (*model.Bundle, er
 }
 
 func (s *bundleService) UpdateBundle(id string, input model.BundleInput) (*model.Bundle, error) {
-	if len(input.Products) == 0 && len(input.Services) == 0 {
-		return nil, errors.New("bundle must contain at least one product or service")
-	}
-
 	if input.BundlePrice <= 0 {
-		return nil, errors.New("bundle price must be greater than 0")
+		return nil, errors.New("harga bundle harus lebih dari 0")
+	}
+	if input.Stock < 0 {
+		return nil, errors.New("stok tidak boleh negatif")
 	}
 
-	if input.Stock < 0 {
-		return nil, errors.New("stock cannot be negative")
+	// Validasi: Harus ada minimal 1 produk ATAU 1 service
+	if len(input.Products) == 0 && len(input.Services) == 0 {
+		return nil, errors.New("bundle harus memiliki minimal 1 produk atau 1 layanan")
 	}
 
 	isActive := true

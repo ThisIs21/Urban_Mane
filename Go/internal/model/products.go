@@ -16,6 +16,9 @@ type Product struct {
 	Category    string        `bson:"category" json:"category"`
 	Image       string        `bson:"image" json:"image"`
 	IsActive    bool          `bson:"isActive" json:"isActive"`
+	TotalSold     int       `bson:"totalSold" json:"totalSold"`
+    TotalRevenue  int       `bson:"totalRevenue" json:"totalRevenue"`
+    LastRestockAt time.Time `bson:"lastRestockAt" json:"lastRestockAt"`
 	CreatedAt   time.Time     `bson:"createdAt" json:"createdAt"`
 	UpdatedAt   time.Time     `bson:"updatedAt" json:"updatedAt"`
 }
