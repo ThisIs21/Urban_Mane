@@ -8,7 +8,7 @@ import (
 )
 
 type BundleService interface {
-	GetAllBundles(search string) ([]model.Bundle, error)
+	GetAllBundles(search string, active *bool) ([]model.Bundle, error)
 	GetBundleByID(id string) (*model.Bundle, error)
 	CreateBundle(input model.BundleInput) (*model.Bundle, error)
 	UpdateBundle(id string, input model.BundleInput) (*model.Bundle, error)
@@ -22,10 +22,21 @@ func NewBundleService() BundleService {
 	return &bundleService{}
 }
 
-func (s *bundleService) GetAllBundles(search string) ([]model.Bundle, error) {
+func (s *bundleService) GetAllBundles(search string, active *bool) ([]model.Bundle, error) {
 	bundles, err := repository.GetAllBundles(search)
 	if err != nil {
 		return nil, err
+	}
+
+	// Filter berdasarkan active jika disediakan
+	if active != nil {
+		filtered := []model.Bundle{}
+		for _, b := range bundles {
+			if b.IsActive == *active {
+				filtered = append(filtered, b)
+			}
+		}
+		bundles = filtered
 	}
 
 	for i := range bundles {

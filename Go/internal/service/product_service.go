@@ -12,7 +12,7 @@ import (
 
 type ProductService interface {
 	CreateProduct(input model.ProductInput) (*model.Product, error)
-	GetAllProducts(search string) ([]model.Product, error)
+	GetAllProducts(search string, active *bool) ([]model.Product, error)
 	GetProductByID(id string) (*model.Product, error) // <--- TAMBAHKAN INI
 	UpdateProduct(id string, input model.ProductInput) (*model.Product, error)
 	DeleteProduct(id string) error
@@ -65,10 +65,21 @@ func (s *productService) CreateProduct(input model.ProductInput) (*model.Product
 
     return createdProduct, nil
 }
-func (s *productService) GetAllProducts(search string) ([]model.Product, error) {
+func (s *productService) GetAllProducts(search string, active *bool) ([]model.Product, error) {
 	products, err := repository.GetAllProducts(search)
 	if err != nil {
 		return nil, err
+	}
+
+	// Filter berdasarkan active jika disediakan
+	if active != nil {
+		filtered := []model.Product{}
+		for _, p := range products {
+			if p.IsActive == *active {
+				filtered = append(filtered, p)
+			}
+		}
+		products = filtered
 	}
 
 	for i := range products {

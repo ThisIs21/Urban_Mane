@@ -19,7 +19,18 @@ func NewServiceController(svc service.ServiceService) *ServiceController {
 // GetServices untuk ambil semua services dengan search
 func (c *ServiceController) GetServices(ctx *gin.Context) {
 	search := ctx.Query("search")
-	services, err := c.service.GetAllServices(search)
+	activeStr := ctx.Query("active")
+	var active *bool
+	if activeStr != "" {
+		if activeStr == "true" {
+			active = new(bool)
+			*active = true
+		} else if activeStr == "false" {
+			active = new(bool)
+			*active = false
+		}
+	}
+	services, err := c.service.GetAllServices(search, active)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

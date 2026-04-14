@@ -11,7 +11,7 @@ import (
 
 // Interface untuk ServiceService
 type ServiceService interface {
-	GetAllServices(search string) ([]model.Service, error)
+	GetAllServices(search string, active *bool) ([]model.Service, error)
 	CreateService(input model.ServiceInput) (*model.Service, error)
 	UpdateService(id string, input model.ServiceInput) (*model.Service, error)
 	DeleteService(id string) error
@@ -25,10 +25,21 @@ func NewServiceService() ServiceService {
 }
 
 // GetAllServices mengambil semua services dengan fitur search
-func (s *serviceService) GetAllServices(search string) ([]model.Service, error) {
+func (s *serviceService) GetAllServices(search string, active *bool) ([]model.Service, error) {
 	services, err := repository.GetAllServices(search)
 	if err != nil {
 		return nil, err
+	}
+
+	// Filter berdasarkan active jika disediakan
+	if active != nil {
+		filtered := []model.Service{}
+		for _, svc := range services {
+			if svc.IsActive == *active {
+				filtered = append(filtered, svc)
+			}
+		}
+		services = filtered
 	}
 
 	for i := range services {

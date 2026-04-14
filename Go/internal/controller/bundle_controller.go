@@ -18,7 +18,18 @@ func NewBundleController(svc service.BundleService) *BundleController {
 
 func (c *BundleController) GetBundles(ctx *gin.Context) {
 	search := ctx.Query("search")
-	bundles, err := c.service.GetAllBundles(search)
+	activeStr := ctx.Query("active")
+	var active *bool
+	if activeStr != "" {
+		if activeStr == "true" {
+			active = new(bool)
+			*active = true
+		} else if activeStr == "false" {
+			active = new(bool)
+			*active = false
+		}
+	}
+	bundles, err := c.service.GetAllBundles(search, active)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

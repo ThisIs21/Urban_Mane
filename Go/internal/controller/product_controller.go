@@ -18,7 +18,18 @@ func NewProductController(service service.ProductService) *ProductController {
 
 func (c *ProductController) GetProducts(ctx *gin.Context) {
     search := ctx.Query("search")
-    products, err := c.service.GetAllProducts(search)
+    activeStr := ctx.Query("active")
+    var active *bool
+    if activeStr != "" {
+        if activeStr == "true" {
+            active = new(bool)
+            *active = true
+        } else if activeStr == "false" {
+            active = new(bool)
+            *active = false
+        }
+    }
+    products, err := c.service.GetAllProducts(search, active)
     if err != nil {
         ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
