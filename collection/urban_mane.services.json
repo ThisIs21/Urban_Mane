@@ -1,41 +1,5 @@
 [{
   "_id": {
-    "$oid": "69cf76208ffcf1d2756b5b5f"
-  },
-  "name": "Haircut",
-  "price": 50000,
-  "duration": 30,
-  "category": "Hair Service",
-  "image": "/images/products/product_1775312825.jpeg",
-  "requiredProducts": [],
-  "isActive": true,
-  "createdAt": {
-    "$date": "2026-04-03T08:11:12.104Z"
-  },
-  "updatedAt": {
-    "$date": "2026-04-04T14:27:07.261Z"
-  }
-},
-{
-  "_id": {
-    "$oid": "69cf76208ffcf1d2756b5b60"
-  },
-  "name": "Beard Trimming",
-  "price": 30000,
-  "duration": 15,
-  "category": "Beard Service",
-  "image": "/images/products/product_1775312847.jpeg",
-  "requiredProducts": [],
-  "isActive": true,
-  "createdAt": {
-    "$date": "2026-04-03T08:11:12.104Z"
-  },
-  "updatedAt": {
-    "$date": "2026-04-04T14:27:29.639Z"
-  }
-},
-{
-  "_id": {
     "$oid": "69cf76208ffcf1d2756b5b61"
   },
   "name": "Hair Coloring",
@@ -52,12 +16,12 @@
       "quantity": 1
     }
   ],
-  "isActive": false,
+  "isActive": true,
   "createdAt": {
     "$date": "2026-04-03T08:11:12.104Z"
   },
   "updatedAt": {
-    "$date": "2026-04-05T11:32:56.281Z"
+    "$date": "2026-04-13T14:27:42.843Z"
   }
 },
 {
@@ -148,5 +112,23 @@
   },
   "updatedAt": {
     "$date": "2026-04-05T11:34:00.612Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd02e53c737f34e0cab630"
+  },
+  "name": "Hair Wash",
+  "price": 10000,
+  "duration": 15,
+  "category": "Haircut",
+  "image": "/images/products/product_1776091873.jfif",
+  "requiredProducts": [],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-13T14:51:17.639Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T14:51:17.639Z"
   }
 }]

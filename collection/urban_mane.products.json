@@ -1,31 +1,11 @@
 [{
   "_id": {
-    "$oid": "69cf76208ffcf1d2756b5b58"
-  },
-  "name": "Beard Oil",
-  "description": "Nourishing oil for beard care",
-  "price": 75000,
-  "stock": 34,
-  "category": "Beard Care",
-  "image": "/images/products/product_1775312884.jpeg",
-  "isActive": true,
-  "createdAt": {
-    "$date": {
-      "$numberLong": "-62135596800000"
-    }
-  },
-  "updatedAt": {
-    "$date": "2026-04-08T16:20:55.458Z"
-  }
-},
-{
-  "_id": {
     "$oid": "69cf76208ffcf1d2756b5b59"
   },
   "name": "Hair Tonic",
   "description": "Refreshing tonic for scalp and hair",
   "price": 60000,
-  "stock": 13,
+  "stock": 12,
   "category": "Hair Care",
   "image": "/images/products/product_1775385327.jfif",
   "isActive": true,
@@ -174,5 +154,30 @@
   },
   "updatedAt": {
     "$date": "2026-04-05T10:40:13.816Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dcfec101a0d96f897dd6e7"
+  },
+  "name": "Hair Color",
+  "description": "pewarna rambut",
+  "price": 15000,
+  "stock": 50,
+  "category": "Styling",
+  "image": "/images/products/product_1776090816.jfif",
+  "isActive": true,
+  "totalSold": 0,
+  "totalRevenue": 0,
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "createdAt": {
+    "$date": "2026-04-13T14:33:37.980Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-13T14:33:37.980Z"
   }
 }]
