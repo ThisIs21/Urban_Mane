@@ -87,7 +87,7 @@
   "phone": "025648421",
   "photoUrl": "",
   "isActive": true,
-  "status": "",
+  "status": "idle",
   "createdAt": {
     "$date": "2026-04-13T15:03:48.454Z"
   },

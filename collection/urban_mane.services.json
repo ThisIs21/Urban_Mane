@@ -10,9 +10,9 @@
   "requiredProducts": [
     {
       "productId": {
-        "$oid": "000000000000000000000000"
+        "$oid": "69dcfec101a0d96f897dd6e7"
       },
-      "productName": "",
+      "productName": "Hair Color",
       "quantity": 1
     }
   ],
@@ -21,7 +21,7 @@
     "$date": "2026-04-03T08:11:12.104Z"
   },
   "updatedAt": {
-    "$date": "2026-04-13T14:27:42.843Z"
+    "$date": "2026-04-14T06:03:42.805Z"
   }
 },
 {
@@ -130,5 +130,31 @@
   },
   "updatedAt": {
     "$date": "2026-04-13T14:51:17.639Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddde9f56a4e6fd77427009"
+  },
+  "name": "Perming",
+  "price": 50000,
+  "duration": 60,
+  "category": "Styling",
+  "image": "/images/products/product_1776148120.jpeg",
+  "requiredProducts": [
+    {
+      "productId": {
+        "$oid": "69ddd97656a4e6fd77427007"
+      },
+      "productName": "Perming Solution",
+      "quantity": 1
+    }
+  ],
+  "isActive": true,
+  "createdAt": {
+    "$date": "2026-04-14T06:28:47.495Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-14T06:28:47.495Z"
   }
 }]

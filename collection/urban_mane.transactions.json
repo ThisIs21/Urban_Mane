@@ -1,0 +1,1149 @@
+[{
+  "_id": {
+    "$oid": "69d1129789c2cd4a99df420f"
+  },
+  "invoice_number": "URM-20260404-7300",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "qwerty",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 135000,
+  "discount": 0,
+  "grand_total": 135000,
+  "pay_amount": 131232131,
+  "change": 131097131,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-04T13:31:03.237Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d239a4100d948c01dcf241"
+  },
+  "invoice_number": "URM-20260405-1200",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "qwe",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 0,
+  "grand_total": 75000,
+  "pay_amount": 100000,
+  "change": 25000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-05T10:29:56.077Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d23a4c100d948c01dcf242"
+  },
+  "invoice_number": "URM-20260405-4600",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 37500,
+  "grand_total": 37500,
+  "pay_amount": 50000,
+  "change": 12500,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-05T10:32:44.149Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d523a3af41837e099dbf0a"
+  },
+  "invoice_number": "URM-20260407-2600",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "123",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 2,
+      "sub_total": 150000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 210000,
+  "discount": 0,
+  "grand_total": 210000,
+  "pay_amount": 300000,
+  "change": 90000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:32:51.063Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d523a6af41837e099dbf0c"
+  },
+  "invoice_number": "URM-20260407-9000",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "123",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 2,
+      "sub_total": 150000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 210000,
+  "discount": 0,
+  "grand_total": 210000,
+  "pay_amount": 300000,
+  "change": 90000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:32:54.307Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d523b4af41837e099dbf0e"
+  },
+  "invoice_number": "URM-20260407-1900",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "123",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 135000,
+  "discount": 0,
+  "grand_total": 135000,
+  "pay_amount": 300000,
+  "change": 165000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:33:08.534Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d526dcaf41837e099dbf10"
+  },
+  "invoice_number": "URM-20260407-9500",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "saya",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 135000,
+  "discount": 0,
+  "grand_total": 135000,
+  "pay_amount": 150000,
+  "change": 15000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:46:36.507Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d5273baf41837e099dbf12"
+  },
+  "invoice_number": "URM-20260407-500",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 60000,
+  "discount": 0,
+  "grand_total": 60000,
+  "pay_amount": 70000,
+  "change": 10000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:48:11.502Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d528ecaf41837e099dbf14"
+  },
+  "invoice_number": "URM-20260407-5000",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "123",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 2,
+      "sub_total": 120000,
+      "type": "product"
+    },
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5a"
+      },
+      "name": "Hair Spray",
+      "price": 45000,
+      "quantity": 1,
+      "sub_total": 45000,
+      "type": "product"
+    }
+  ],
+  "total_price": 165000,
+  "discount": 0,
+  "grand_total": 165000,
+  "pay_amount": 200000,
+  "change": 35000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:55:24.605Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52916af41837e099dbf16"
+  },
+  "invoice_number": "URM-20260407-9500",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "123",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 60000,
+  "discount": 0,
+  "grand_total": 60000,
+  "pay_amount": 100000,
+  "change": 40000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T15:56:06.498Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52b41af41837e099dbf18"
+  },
+  "invoice_number": "URM-20260407-7300",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "qwerty",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5a"
+      },
+      "name": "Hair Spray",
+      "price": 45000,
+      "quantity": 3,
+      "sub_total": 135000,
+      "type": "product"
+    }
+  ],
+  "total_price": 135000,
+  "discount": 0,
+  "grand_total": 135000,
+  "pay_amount": 150000,
+  "change": 15000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:05:21.268Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52b8baf41837e099dbf1a"
+  },
+  "invoice_number": "URM-20260407-7500",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "saya",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5b"
+      },
+      "name": "Shampoo",
+      "price": 35000,
+      "quantity": 2,
+      "sub_total": 70000,
+      "type": "product"
+    }
+  ],
+  "total_price": 70000,
+  "discount": 0,
+  "grand_total": 70000,
+  "pay_amount": 100000,
+  "change": 30000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:06:35.399Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52c462b18b4f30ae0f10c"
+  },
+  "invoice_number": "URM-20260407-4700",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "poio",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5c"
+      },
+      "name": "Conditioner",
+      "price": 40000,
+      "quantity": 1,
+      "sub_total": 40000,
+      "type": "product"
+    }
+  ],
+  "total_price": 40000,
+  "discount": 0,
+  "grand_total": 40000,
+  "pay_amount": 50000,
+  "change": 10000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:09:42.867Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52c612b18b4f30ae0f10e"
+  },
+  "invoice_number": "URM-20260407-2300",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "qwer",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5c"
+      },
+      "name": "Conditioner",
+      "price": 40000,
+      "quantity": 1,
+      "sub_total": 40000,
+      "type": "product"
+    }
+  ],
+  "total_price": 40000,
+  "discount": 0,
+  "grand_total": 40000,
+  "pay_amount": 100000,
+  "change": 60000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:10:09.778Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52ce92b18b4f30ae0f110"
+  },
+  "invoice_number": "URM-20260407-1000",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "1",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5b"
+      },
+      "name": "Shampoo",
+      "price": 35000,
+      "quantity": 1,
+      "sub_total": 35000,
+      "type": "product"
+    }
+  ],
+  "total_price": 35000,
+  "discount": 0,
+  "grand_total": 35000,
+  "pay_amount": 40000,
+  "change": 5000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:12:25.692Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d52d972b18b4f30ae0f112"
+  },
+  "invoice_number": "URM-20260407-600",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5a"
+      },
+      "name": "Hair Spray",
+      "price": 45000,
+      "quantity": 1,
+      "sub_total": 45000,
+      "type": "product"
+    }
+  ],
+  "total_price": 45000,
+  "discount": 0,
+  "grand_total": 45000,
+  "pay_amount": 50000,
+  "change": 5000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:15:19.410Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d53542de36a2c1dfd96fe0"
+  },
+  "invoice_number": "URM-20260407-4600",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 150000,
+  "change": 50000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-07T16:48:02.536Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d6705d5c5854e7bd7f6786"
+  },
+  "invoice_number": "URM-20260408-1000",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "saya",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 60000,
+  "discount": 0,
+  "grand_total": 60000,
+  "pay_amount": 70000,
+  "change": 10000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T15:12:29.211Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d679940e1bed93f5f2b9aa"
+  },
+  "invoice_number": "URM-20260408-1200",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 0,
+  "grand_total": 75000,
+  "pay_amount": 120000,
+  "change": 45000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T15:51:48.301Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d679fc0e1bed93f5f2b9ac"
+  },
+  "invoice_number": "URM-20260408-4800",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 0,
+  "grand_total": 75000,
+  "pay_amount": 75000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T15:53:32.527Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67bfe0e1bed93f5f2b9b3"
+  },
+  "invoice_number": "URM-20260408-3000",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:02:06.627Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67c420e1bed93f5f2b9b5"
+  },
+  "invoice_number": "URM-20260408-7400",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:03:14.473Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67c680e1bed93f5f2b9b7"
+  },
+  "invoice_number": "URM-20260408-7400",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:03:52.874Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67c860e1bed93f5f2b9b9"
+  },
+  "invoice_number": "URM-20260408-200",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:04:22.547Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67c9e0e1bed93f5f2b9bb"
+  },
+  "invoice_number": "URM-20260408-7600",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 0,
+  "grand_total": 75000,
+  "pay_amount": 80000,
+  "change": 5000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:04:46.156Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67cb60e1bed93f5f2b9bd"
+  },
+  "invoice_number": "URM-20260408-300",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b58"
+      },
+      "name": "Beard Oil",
+      "price": 75000,
+      "quantity": 1,
+      "sub_total": 75000,
+      "type": "product"
+    }
+  ],
+  "total_price": 75000,
+  "discount": 0,
+  "grand_total": 75000,
+  "pay_amount": 400000,
+  "change": 325000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:05:10.198Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67d25c0afb41aaf8a1d29"
+  },
+  "invoice_number": "URM-20260408-3300",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:07:01.763Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67d43c0afb41aaf8a1d2b"
+  },
+  "invoice_number": "URM-20260408-7200",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:07:31.258Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d67e00c0afb41aaf8a1d32"
+  },
+  "invoice_number": "URM-20260408-1700",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:10:40.372Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69d6809162229fcf93c93739"
+  },
+  "invoice_number": "URM-20260408-6100",
+  "cashier_id": {
+    "$oid": "69cf74ea47420f0745b95a01"
+  },
+  "cashier_name": "Cashier",
+  "customer_name": "",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69d52f2b2b18b4f30ae0f119"
+      },
+      "name": "Kahf Kit",
+      "price": 100000,
+      "quantity": 1,
+      "sub_total": 100000,
+      "type": "bundle"
+    }
+  ],
+  "total_price": 100000,
+  "discount": 0,
+  "grand_total": 100000,
+  "pay_amount": 100000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-08T16:21:37.256Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda1bc6587e07f60f6ed22"
+  },
+  "invoice_number": "URM-20260414-3020",
+  "cashier_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "cashier_name": "Gilang",
+  "customer_name": "Walk-in",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b5c"
+      },
+      "name": "Conditioner",
+      "price": 40000,
+      "quantity": 1,
+      "sub_total": 40000,
+      "type": "product"
+    }
+  ],
+  "total_price": 40000,
+  "discount": 0,
+  "grand_total": 40000,
+  "pay_amount": 100000,
+  "change": 60000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-14T02:09:00.005Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda1e86587e07f60f6ed24"
+  },
+  "invoice_number": "URM-20260414-2483",
+  "cashier_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "cashier_name": "Gilang",
+  "customer_name": "Walk-in",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 60000,
+  "discount": 0,
+  "grand_total": 60000,
+  "pay_amount": 200000,
+  "change": 140000,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-14T02:09:44.074Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda2096587e07f60f6ed26"
+  },
+  "invoice_number": "URM-20260414-5570",
+  "cashier_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "cashier_name": "Gilang",
+  "customer_name": "Walk-in",
+  "items": [
+    {
+      "item_id": {
+        "$oid": "69cf76208ffcf1d2756b5b59"
+      },
+      "name": "Hair Tonic",
+      "price": 60000,
+      "quantity": 1,
+      "sub_total": 60000,
+      "type": "product"
+    }
+  ],
+  "total_price": 60000,
+  "discount": 0,
+  "grand_total": 60000,
+  "pay_amount": 60000,
+  "change": 0,
+  "payment_method": "cash",
+  "status": "success",
+  "created_at": {
+    "$date": "2026-04-14T02:10:17.949Z"
+  }
+}]

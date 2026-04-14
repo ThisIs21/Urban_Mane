@@ -5,7 +5,7 @@
   "name": "Hair Tonic",
   "description": "Refreshing tonic for scalp and hair",
   "price": 60000,
-  "stock": 12,
+  "stock": 9,
   "category": "Hair Care",
   "image": "/images/products/product_1775385327.jfif",
   "isActive": true,
@@ -42,7 +42,7 @@
   "_id": {
     "$oid": "69cf76208ffcf1d2756b5b5b"
   },
-  "name": "Shampoo",
+  "name": "Shampoo Urban Mane",
   "description": "Gentle shampoo for all hair types",
   "price": 35000,
   "stock": 37,
@@ -55,8 +55,15 @@
     }
   },
   "updatedAt": {
-    "$date": "2026-04-05T10:36:24.011Z"
-  }
+    "$date": "2026-04-14T05:54:30.833Z"
+  },
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "totalRevenue": 0,
+  "totalSold": 0
 },
 {
   "_id": {
@@ -65,7 +72,7 @@
   "name": "Conditioner",
   "description": "Deep conditioning treatment",
   "price": 40000,
-  "stock": 24,
+  "stock": 23,
   "category": "Hair Care",
   "image": "/images/products/product_1775385429.jpg",
   "isActive": true,
@@ -179,5 +186,105 @@
   },
   "updatedAt": {
     "$date": "2026-04-13T14:33:37.980Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd5f856a4e6fd77426ffe"
+  },
+  "name": "Hair Powder",
+  "description": "Styling Rambut",
+  "price": 20000,
+  "stock": 20,
+  "category": "Styling",
+  "image": "/images/products/product_1776145910.jpeg",
+  "isActive": true,
+  "totalSold": 0,
+  "totalRevenue": 0,
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "createdAt": {
+    "$date": "2026-04-14T05:51:52.428Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-14T05:51:52.428Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd66c56a4e6fd77427000"
+  },
+  "name": "Shampoo Clear",
+  "description": "Shampoo Pembersih Rambut",
+  "price": 18000,
+  "stock": 30,
+  "category": "Hair Care",
+  "image": "/images/products/product_1776146026.webp",
+  "isActive": true,
+  "totalSold": 0,
+  "totalRevenue": 0,
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "createdAt": {
+    "$date": "2026-04-14T05:53:48.181Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-14T05:54:18.791Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd6ed56a4e6fd77427005"
+  },
+  "name": "Clay Mate",
+  "description": "qwerty",
+  "price": 8000,
+  "stock": 10,
+  "category": "Styling",
+  "image": "/images/products/product_1776146155.webp",
+  "isActive": true,
+  "totalSold": 0,
+  "totalRevenue": 0,
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "createdAt": {
+    "$date": "2026-04-14T05:55:57.195Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-14T05:55:57.195Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd97656a4e6fd77427007"
+  },
+  "name": "Perming Solution",
+  "description": "Cairan Untuk Mengkritingkan Rambut",
+  "price": 30000,
+  "stock": 10,
+  "category": "Styling",
+  "image": "/images/products/product_1776146804.jpg",
+  "isActive": true,
+  "totalSold": 0,
+  "totalRevenue": 0,
+  "lastRestockAt": {
+    "$date": {
+      "$numberLong": "-62135596800000"
+    }
+  },
+  "createdAt": {
+    "$date": "2026-04-14T06:06:46.269Z"
+  },
+  "updatedAt": {
+    "$date": "2026-04-14T06:06:46.269Z"
   }
 }]

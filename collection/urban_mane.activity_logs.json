@@ -1323,4 +1323,378 @@
   "created_at": {
     "$date": "2026-04-13T16:02:33.054Z"
   }
+},
+{
+  "_id": {
+    "$oid": "69dd9c4f6587e07f60f6ed1e"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Order",
+  "entity_id": "69dd9c4f6587e07f60f6ed1d",
+  "details": "Membuat order ORD-1776131151333061133 untuk qwe dengan services: Hair Coloring x1, ",
+  "created_at": {
+    "$date": "2026-04-14T01:45:51.339Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd9c616587e07f60f6ed1f"
+  },
+  "user_id": {
+    "$oid": "69d24b77c7622a65b5ece508"
+  },
+  "user_name": "Qindow",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dd9c4f6587e07f60f6ed1d",
+  "details": "Barber Qindow mulai mengerjakan order ORD-1776131151333061133",
+  "created_at": {
+    "$date": "2026-04-14T01:46:09.725Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd9c646587e07f60f6ed20"
+  },
+  "user_id": {
+    "$oid": "69d24b77c7622a65b5ece508"
+  },
+  "user_name": "Qindow",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dd9c4f6587e07f60f6ed1d",
+  "details": "Barber Qindow selesai mengerjakan order ORD-1776131151333061133",
+  "created_at": {
+    "$date": "2026-04-14T01:46:12.999Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dd9c6d6587e07f60f6ed21"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "cashier",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dd9c4f6587e07f60f6ed1d",
+  "details": "Pembayaran order ORD-1776131151333061133 selesai dengan metode cash",
+  "created_at": {
+    "$date": "2026-04-14T01:46:21.847Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda1bc6587e07f60f6ed23"
+  },
+  "user_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "user_name": "Gilang",
+  "role": "cashier",
+  "action": "CREATE",
+  "entity": "Transaction",
+  "entity_id": "69dda1bc6587e07f60f6ed22",
+  "details": "Membuat transaksi invoice URM-20260414-3020 untuk Walk-in dengan items: Conditioner x1, ",
+  "created_at": {
+    "$date": "2026-04-14T02:09:00.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda1e86587e07f60f6ed25"
+  },
+  "user_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "user_name": "Gilang",
+  "role": "cashier",
+  "action": "CREATE",
+  "entity": "Transaction",
+  "entity_id": "69dda1e86587e07f60f6ed24",
+  "details": "Membuat transaksi invoice URM-20260414-2483 untuk Walk-in dengan items: Hair Tonic x1, ",
+  "created_at": {
+    "$date": "2026-04-14T02:09:44.075Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda2096587e07f60f6ed27"
+  },
+  "user_id": {
+    "$oid": "69dd05fa3c737f34e0cab637"
+  },
+  "user_name": "Gilang",
+  "role": "cashier",
+  "action": "CREATE",
+  "entity": "Transaction",
+  "entity_id": "69dda2096587e07f60f6ed26",
+  "details": "Membuat transaksi invoice URM-20260414-5570 untuk Walk-in dengan items: Hair Tonic x1, ",
+  "created_at": {
+    "$date": "2026-04-14T02:10:17.949Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda2276587e07f60f6ed29"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Order",
+  "entity_id": "69dda2276587e07f60f6ed28",
+  "details": "Membuat order ORD-1776132647945958009 untuk pepe dengan services: Jumat Berkah x1, ",
+  "created_at": {
+    "$date": "2026-04-14T02:10:47.946Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda22e6587e07f60f6ed2a"
+  },
+  "user_id": {
+    "$oid": "69dd05d43c737f34e0cab635"
+  },
+  "user_name": "Kumis",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dda2276587e07f60f6ed28",
+  "details": "Barber Kumis mulai mengerjakan order ORD-1776132647945958009",
+  "created_at": {
+    "$date": "2026-04-14T02:10:54.743Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda2326587e07f60f6ed2b"
+  },
+  "user_id": {
+    "$oid": "69dd05d43c737f34e0cab635"
+  },
+  "user_name": "Kumis",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dda2276587e07f60f6ed28",
+  "details": "Barber Kumis selesai mengerjakan order ORD-1776132647945958009",
+  "created_at": {
+    "$date": "2026-04-14T02:10:58.079Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69dda2426587e07f60f6ed2c"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "cashier",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69dda2276587e07f60f6ed28",
+  "details": "Pembayaran order ORD-1776132647945958009 selesai dengan metode cash",
+  "created_at": {
+    "$date": "2026-04-14T02:11:14.892Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddb1836587e07f60f6ed2e"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Order",
+  "entity_id": "69ddb1836587e07f60f6ed2d",
+  "details": "Membuat order ORD-1776136579094031776 untuk ua dengan services: Hair Coloring x1, Hot Towel Treatment x1, ",
+  "created_at": {
+    "$date": "2026-04-14T03:16:19.094Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddb1896587e07f60f6ed2f"
+  },
+  "user_id": {
+    "$oid": "69d347ba48f9588afa9907a2"
+  },
+  "user_name": "Cipa",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69ddb1836587e07f60f6ed2d",
+  "details": "Barber Cipa mulai mengerjakan order ORD-1776136579094031776",
+  "created_at": {
+    "$date": "2026-04-14T03:16:25.987Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddb18d6587e07f60f6ed30"
+  },
+  "user_id": {
+    "$oid": "69d347ba48f9588afa9907a2"
+  },
+  "user_name": "Cipa",
+  "role": "barber",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69ddb1836587e07f60f6ed2d",
+  "details": "Barber Cipa selesai mengerjakan order ORD-1776136579094031776",
+  "created_at": {
+    "$date": "2026-04-14T03:16:29.295Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddb1996587e07f60f6ed31"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "cashier",
+  "action": "UPDATE",
+  "entity": "Order",
+  "entity_id": "69ddb1836587e07f60f6ed2d",
+  "details": "Pembayaran order ORD-1776136579094031776 selesai dengan metode cash",
+  "created_at": {
+    "$date": "2026-04-14T03:16:41.471Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd5f856a4e6fd77426fff"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "69ddd5f856a4e6fd77426ffe",
+  "details": "Membuat produk baru: Hair Powder dengan harga 20000",
+  "created_at": {
+    "$date": "2026-04-14T05:51:52.430Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd66c56a4e6fd77427001"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "69ddd66c56a4e6fd77427000",
+  "details": "Membuat produk baru: Shampoo dengan harga 18000",
+  "created_at": {
+    "$date": "2026-04-14T05:53:48.182Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd67d56a4e6fd77427002"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "Product",
+  "entity_id": "69ddd66c56a4e6fd77427000",
+  "details": "Mengubah produk: Shampoo Pantene",
+  "created_at": {
+    "$date": "2026-04-14T05:54:05.060Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd68a56a4e6fd77427003"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "Product",
+  "entity_id": "69ddd66c56a4e6fd77427000",
+  "details": "Mengubah produk: Shampoo Clear",
+  "created_at": {
+    "$date": "2026-04-14T05:54:18.792Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd69656a4e6fd77427004"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "UPDATE",
+  "entity": "Product",
+  "entity_id": "69cf76208ffcf1d2756b5b5b",
+  "details": "Mengubah produk: Shampoo Urban Mane",
+  "created_at": {
+    "$date": "2026-04-14T05:54:30.835Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd6ed56a4e6fd77427006"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "69ddd6ed56a4e6fd77427005",
+  "details": "Membuat produk baru: Clay Mate dengan harga 8000",
+  "created_at": {
+    "$date": "2026-04-14T05:55:57.196Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69ddd97656a4e6fd77427008"
+  },
+  "user_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "user_name": "System",
+  "role": "system",
+  "action": "CREATE",
+  "entity": "Product",
+  "entity_id": "69ddd97656a4e6fd77427007",
+  "details": "Membuat produk baru: Perming Solution dengan harga 30000",
+  "created_at": {
+    "$date": "2026-04-14T06:06:46.270Z"
+  }
 }]

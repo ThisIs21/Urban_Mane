@@ -106,7 +106,7 @@
     }
   ],
   "bundlePrice": 40000,
-  "stock": 35,
+  "stock": 34,
   "isActive": true,
   "createdAt": {
     "$date": {
